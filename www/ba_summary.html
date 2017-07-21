@@ -1,0 +1,51 @@
+
+<!-- We don't need full layout here, because this page will be parsed with Ajax-->
+<!-- Top Navbar-->
+<div class="navbar">
+  <div class="navbar-inner">
+    <div class="left"><a href="#" class="back link"> <i class="icon icon-back"></i><span>Back</span></a></div>
+    <div class="center sliding" id="billsumpt">Default</div>
+    <div class="right">
+      <!-- Right link contains only icon - additional "icon-only" class-->
+      <a href="#" class="link icon-only open-panel"> <i class="icon icon-bars"></i></a>
+    </div>
+  </div>
+</div>
+<div class="pages">
+  <!-- Page, data-page contains page name-->
+  <div data-page="bill_summ" class="page">
+    <!-- Scrollable page content-->
+    <div class="page-content">
+      <div class="content-block-title">Billing Account Info</div>
+      <div class="content-block">
+        <div class="content-block-inner" id="ba_summ_block"></div>
+      </div>
+      <div class="content-block-title">History</div>
+      <div class="list-block">
+        <ul>
+          <li><a href="ba_h_pymt.html" class="item-link">
+              <div class="item-content">
+                <div class="item-inner"> 
+                  <div class="item-title">Payment</div>
+                </div>
+              </div></a></li>
+          <li><a href="s_tt.html" class="item-link">
+              <div class="item-content"> 
+                <div class="item-inner">
+                  <div class="item-title">Adjustment</div>
+                </div>
+              </div></a></li>
+          <li><a href="ba_sr_summary.html" class="item-link">
+              <div class="item-content"> 
+                <div class="item-inner">
+                  <div class="item-title">Service Request</div>
+                </div>
+              </div></a></li>
+        </ul>
+      </div>
+      <div class="content-block">
+        <a href="#" onclick="getTrialBill()" class="button button-big button-fill">Trial Bill</a>
+      </div>
+    </div>
+  </div>
+</div>

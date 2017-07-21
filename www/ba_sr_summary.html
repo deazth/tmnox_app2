@@ -1,0 +1,47 @@
+
+<!-- We don't need full layout here, because this page will be parsed with Ajax-->
+<!-- Top Navbar-->
+<div class="navbar">
+  <div class="navbar-inner">
+    <div class="left"><a href="#" class="back link"> <i class="icon icon-back"></i><span>Back</span></a></div>
+    <div class="center sliding" id="basrpt">Default</div>
+    <div class="right">
+      <!-- Right link contains only icon - additional "icon-only" class-->
+      <a href="#" class="link icon-only open-panel"> <i class="icon icon-bars"></i></a>
+    </div>
+  </div>
+</div>
+<div class="pages">
+  <!-- Page, data-page contains page name-->
+  <div data-page="ba_sr_summary" class="page">
+    <!-- Scrollable page content-->
+    <div class="page-content pull-to-refresh-content">
+      <div class="pull-to-refresh-layer">
+        <div class="preloader"></div>
+        <div class="pull-to-refresh-arrow"></div>
+      </div>
+      <div class="content-block-title">Billing Account Info</div>
+      <div class="content-block">
+        <div class="content-block-inner" id="sr_summ_block"></div>
+      </div>
+      <div class="list-block media-list inset">
+        <div class="list-block-label">
+          <p>SR History</p>
+        </div>
+        <ul>
+          <li class="item-content">
+            <div class="item-inner">
+              <div class="item-title-row">
+                <div class="item-title">I-412345512</div>
+                <div class="item-after">624.50</div>
+                <div class="item-after">Posted</div>
+              </div>
+              <div class="item-subtitle">20 Jun 2017</div>
+              <div class="item-subtitle">HSI Discount</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
