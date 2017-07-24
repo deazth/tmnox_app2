@@ -11,6 +11,7 @@ var sblActivity = {};
 var swiftActivity = {}; 
 var contentBlock;
 var mainURL = 'http://localhost:8080/NoxMW';
+var loggedIn = false;
 
 // Add view
 var mainView = myApp.addView('.view-main', {
@@ -19,6 +20,23 @@ var mainView = myApp.addView('.view-main', {
 });
 
 // page inits
+myApp.onPageInit('index', function (page){
+  if(loggedIn != true){
+    mainView.loadPage("login.html");
+  }
+});
+
+myApp.onPageInit('login-screen', function (page) {
+  var pageContainer = $$(page.container);
+  pageContainer.find('.list-button').on('click', function () {
+    var username = pageContainer.find('input[name="username"]').val();
+    var password = pageContainer.find('input[name="password"]').val();
+    // Handle username and password
+    validateLogin(username,password);
+
+  });
+}); 
+
 myApp.onPageInit('bill_summ', function (page) {
   document.getElementById("billsumpt").innerHTML = "BA#" + SearchParam.banumber;
   baLoadAccInfo("ba_summ_block");
@@ -72,7 +90,7 @@ function searchBA(){
   //myApp.alert('Searching for ' + SearchParam.banumber, 'Ouch');
 
 
-
+/*
   $.getJSON(baUrl, function(baInfo){
   
     contentBlock = 
@@ -92,20 +110,32 @@ function searchBA(){
       myApp.alert('Unable to fetch data for ' + SearchParam.banumber, 'Ouch');
     });
 
-    
+    */
 
-// get the BA info
-  // baInfo = {
-  //   'name':'Siti Pelanggan Binti Abahnye',
-  //   'mobileno':'019-3652001',
-  //   'billmedia':'0',
-  //   'bp':'10',
-  //   'address':'22|baker street|Tronoh, Kolo Piloh',
-  //   'toemail':'abu@websitekoi.kom',
-  //   'ccemail':'',
-  //   'outstanding':'315.50'
-  // };
+//get the BA info
+  baInfo = {
+    'name':'Siti Pelanggan Binti Abahnye',
+    'mobileno':'019-3652001',
+    'billmedia':'0',
+    'bp':'10',
+    'address':'22|baker street|Tronoh, Kolo Piloh',
+    'toemail':'abu@websitekoi.kom',
+    'ccemail':'',
+    'outstanding':'315.50'
+  };
 
+
+  contentBlock = 
+        '<p>Name: ' + baInfo.name + '</p>' +
+        '<p>Bill Cycle: ' + baInfo.bp + '</p>' +
+        '<p>Bill Media: ' + baInfo.billmedia + '</p>' +
+        '<p>Address: ' + baInfo.address + '</p>' +
+        '<p>To Email: ' + baInfo.toemail + '</p>' +
+        '<p>CC Email: ' + baInfo.ccemail + '</p>' +
+        '<p>Mobile No: ' + baInfo.mobileno + '</p>' +
+        '<p>Current Outstanding: ' + baInfo.outstanding + '</p>';
+
+  mainView.loadPage("ba_summary.html");
   
 }
 
@@ -148,6 +178,13 @@ function searchOrder(){
   ]};
 
   mainView.loadPage("order_summary.html");
+}
+
+function validateLogin(){
+  myApp.alert('Username: ' + username + ', Password: ' + password, function () {
+  loggedIn = true;
+    mainView.goBack();
+  });
 }
 
 // Billing related functions
