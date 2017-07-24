@@ -28,7 +28,7 @@
 
     <platform name="android">
         <allow-intent href="market:*" />
-        <icon density="xhdpi" src="resources/android/icon/drawable-xhdpi-icon.png" />
+        <icon density="xhdpi" src="res/drawable-xhdpi-icon.png" />
     </platform>
 
     <plugin name="cordova-plugin-whitelist" spec="~1.2.0" />
