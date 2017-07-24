@@ -129,6 +129,21 @@ function searchOrder(){
       'number':'1-45623127',
       'status':'pending',
       'name':'sample order 3'
+    },
+    {
+      'number':'1-45623125',
+      'status':'processing',
+      'name':'sample order 1'
+    },
+    {
+      'number':'1-45623126',
+      'status':'done',
+      'name':'sample order 2'
+    },
+    {
+      'number':'1-45623127',
+      'status':'pending',
+      'name':'sample order 3'
     }
   ]};
 
