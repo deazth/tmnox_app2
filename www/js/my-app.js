@@ -1,9 +1,3 @@
-// Initialize your app
-var myApp = new Framework7();
-
-// Export selectors engine
-var $$ = Dom7;
-
 // global vars
 var SearchParam = {};
 var baInfo = {};
@@ -13,6 +7,12 @@ var contentBlock;
 var mainURL = 'http://localhost:8080/NoxMW';
 var loggedIn = false;
 
+// Initialize your app
+var myApp = new Framework7();
+
+// Export selectors engine
+var $$ = Dom7;
+
 // Add view
 var mainView = myApp.addView('.view-main', {
     // Because we use fixed-through navbar we can enable dynamic navbar
@@ -20,11 +20,11 @@ var mainView = myApp.addView('.view-main', {
 });
 
 // page inits
-myApp.onPageInit('index', function (page){
-  if(loggedIn != true){
-    mainView.loadPage("login.html");
+myApp.onPageInit('index', function (page) {
+  if (!loggedIn) {
+      mainView.router.loadPage('login.html');
   }
-});
+}).trigger(); 
 
 myApp.onPageInit('login-screen', function (page) {
   var pageContainer = $$(page.container);
@@ -38,6 +38,7 @@ myApp.onPageInit('login-screen', function (page) {
 }); 
 
 myApp.onPageInit('bill_summ', function (page) {
+  myApp.alert('init bill sum called');
   document.getElementById("billsumpt").innerHTML = "BA#" + SearchParam.banumber;
   baLoadAccInfo("ba_summ_block");
 });  
@@ -180,10 +181,10 @@ function searchOrder(){
   mainView.loadPage("order_summary.html");
 }
 
-function validateLogin(){
+function validateLogin(username, password){
   myApp.alert('Username: ' + username + ', Password: ' + password, function () {
   loggedIn = true;
-    mainView.goBack();
+    mainView.loadPage("index.html");
   });
 }
 
