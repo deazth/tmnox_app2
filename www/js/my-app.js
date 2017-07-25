@@ -6,6 +6,7 @@ var swiftActivity = {};
 var contentBlock;
 var mainURL = 'http://localhost:8080/NoxMW';
 var loggedIn = false;
+var UsersInfo = {};
 
 // Initialize your app
 var myApp = new Framework7();
@@ -27,12 +28,14 @@ myApp.onPageInit('index', function (page) {
 }).trigger(); 
 
 myApp.onPageInit('login-screen', function (page) {
+
+  loggedIn = false;
+
   var pageContainer = $$(page.container);
-  pageContainer.find('.list-button').on('click', function () {
-    var username = pageContainer.find('input[name="username"]').val();
-    var password = pageContainer.find('input[name="password"]').val();
+  pageContainer.find('.button').on('click', function () {
+    UsersInfo = myApp.formToData('#login-form');
     // Handle username and password
-    validateLogin(username,password);
+    validateLogin();
 
   });
 }); 
@@ -181,8 +184,8 @@ function searchOrder(){
   mainView.loadPage("order_summary.html");
 }
 
-function validateLogin(username, password){
-  myApp.alert('Username: ' + username + ', Password: ' + password, function () {
+function validateLogin(){
+  myApp.alert('Username: ' + UsersInfo.username + ', Password: ' + UsersInfo.password + ', admin: ' + UsersInfo.adminmode, function () {
   loggedIn = true;
     mainView.loadPage("index.html");
   });

@@ -1,7 +1,7 @@
 <div data-page="login-screen" class="page no-navbar no-toolbar no-swipeback">
   <div class="page-content login-screen-content">
     <div class="login-screen-title"><img style="max-width: 100%;" src="res/nox_ani.gif" /></div>
-    <form>
+    <form id="login-form">
       <div class="list-block">
         <ul>
           <li class="item-content">
@@ -20,11 +20,24 @@
               </div>
             </div>
           </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title label">Admin Mode</div>
+                <div class="item-input">
+                  <label class="label-switch">
+                    <input name="adminmode" type="checkbox">
+                    <div class="checkbox"></div>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </li>
         </ul>
       </div>
       <div class="list-block">
         <ul>
-          <li><a href="#" class="item-link list-button">Sign In</a></li>
+          <li><a href="#" class="item-link button button-big button-fill color-green">Sign In</a></li>
         </ul>
       </div>
     </form>
