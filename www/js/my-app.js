@@ -48,7 +48,8 @@ myApp.onPageInit('bill_summ', function (page) {
 
 myApp.onPageInit('order_summ', function (page) {
   document.getElementById("orderSumTopTitle").innerHTML = "Order: " + SearchParam.ordernumber;
-  soLoadSiebelActivity("siebel_item_lst");
+  soLoadSiebelActivity(sblActivity, "siebel_item_lst");
+  soLoadSiebelActivity(swiftActivity, "swift_item_lst");
 });
 
 myApp.onPageInit('ba_trial_bill', function (page){
@@ -87,14 +88,14 @@ myApp.onPageInit('ba_h_pymt', function (page){
 function searchBA(){
   SearchParam = myApp.formToData('#ba-s-form');
   SearchParam.sType = "searchBA";
-//  alert(SBA_SearchParam.banumber);
+  //  alert(SBA_SearchParam.banumber);
 
   var baUrl = mainURL + '/brm/get_acc_info.jsp?bano=' + SearchParam.banumber;
 
   //myApp.alert('Searching for ' + SearchParam.banumber, 'Ouch');
 
 
-/*
+  /*
   $.getJSON(baUrl, function(baInfo){
   
     contentBlock = 
@@ -116,7 +117,7 @@ function searchBA(){
 
     */
 
-//get the BA info
+  //get the BA info
   baInfo = {
     'name':'Siti Pelanggan Binti Abahnye',
     'mobileno':'019-3652001',
@@ -146,7 +147,7 @@ function searchBA(){
 function searchOrder(){
   SearchParam = myApp.formToData('#order-s-form');
   SearchParam.sType = "searchOrder";
-//  alert(SBA_SearchParam.banumber);
+  //  alert(SBA_SearchParam.banumber);
 
   sblActivity = {'activities':[
     {
@@ -181,6 +182,19 @@ function searchOrder(){
     }
   ]};
 
+  swiftActivity = {'activities':[
+    {
+      'number':'1-45623125',
+      'status':'processing',
+      'name':'sample order 1'
+    },
+    {
+      'number':'1-45623126',
+      'status':'done',
+      'name':'sample order 2'
+    }
+  ]};
+
   mainView.loadPage("order_summary.html");
 }
 
@@ -204,18 +218,18 @@ function baLoadAccInfo(blockname){
   document.getElementById(blockname).innerHTML = contentBlock;
 }
 
-function soLoadSiebelActivity(blockname){
+function soLoadSiebelActivity(activityArr, blockname){
   var sblAContent = '<ul>';
   var itemcount = 0;
-  for(act in sblActivity.activities){
+  for(act in activityArr.activities){
     itemcount = itemcount + 1;
     var sblItem = 
       '<li class="item-content">' +
         '<div class="item-inner">' +
           '<div class="item-title-row">' +
-            '<div class="item-title">' + sblActivity.activities[act].number + '</div>' +
-            '<div class="item-after">' + sblActivity.activities[act].name + '</div>' +
-            '<div class="item-after">' + sblActivity.activities[act].status + '</div>' +
+            '<div class="item-title">' + activityArr.activities[act].number + '</div>' +
+            '<div class="item-after">' + activityArr.activities[act].name + '</div>' +
+            '<div class="item-after">' + activityArr.activities[act].status + '</div>' +
           '</div>' +
         '</div>' +
       '</li>';
@@ -224,7 +238,7 @@ function soLoadSiebelActivity(blockname){
   }
 
   if(itemcount == 0){
-    '<li class="item-content">' +
+    var sblItem = '<li class="item-content">' +
         '<div class="item-inner">' +
           '<div class="item-title-row">' +
             '<div class="item-title">No activity found</div>' +
