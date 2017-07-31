@@ -1,7 +1,7 @@
 <div class="navbar">
   <div class="navbar-inner">
     <div class="left"><a href="#" class="back link"> <i class="icon icon-back"></i><span>Back</span></a></div>
-    <div class="center sliding" id="create_iris">Create IRIS</div>
+    <div class="center sliding" id="createIrisTitle">Create IRIS</div>
     <div class="right">
       <!-- Right link contains only icon - additional "icon-only" class-->
       <a href="#" class="link icon-only open-panel"> <i class="icon icon-bars"></i></a>
@@ -13,13 +13,101 @@
   <div data-page="create_iris_form" class="page">
     <!-- Scrollable page content-->
     <div class="page-content">
-      <div class="content-block-title">NOVA Information</div>
+      <div class="content-block-title">Create IRIS</div>
+      <form id="c-iris-form" class="list-block"><ul>
+        <li>
+          <div class="item-content">
+            <div class="item-inner"> 
+              <div class="item-title label">Urgency</div>
+              <div class="item-input">
+                <input id="urg" name="urg" type="text" placeholder="Urgency" readonly />
+              </div>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="item-content">
+            <div class="item-inner"> 
+              <div class="item-title label">Service</div>
+              <div class="item-input">
+                <input id="svc" name="svc" type="text" placeholder="Service" readonly />
+              </div>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="item-content">
+            <div class="item-inner"> 
+              <div class="item-title label">Service Segment</div>
+              <div class="item-input">
+                <input id="svcseg" name="svcseg" type="text" placeholder="Service Segment" readonly />
+              </div>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="item-content">
+            <div class="item-inner"> 
+              <div class="item-title label">Area</div>
+              <div class="item-input">
+                <input id="area" name="area" type="text" placeholder="Area" readonly />
+              </div>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="item-content">
+            <div class="item-inner"> 
+              <div class="item-title label">Sub-Area</div>
+              <div class="item-input">
+                <input id="subarea" name="subarea" type="text" placeholder="Sub-Area" readonly />
+              </div>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="item-content">
+            <div class="item-inner"> 
+              <div class="item-title label">Problem Type</div>
+              <div class="item-input">
+                <input id="probtype" name="probtype" type="text" placeholder="Problem Type" readonly />
+              </div>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="item-content">
+            <div class="item-inner"> 
+              <div class="item-title label">Reference</div>
+              <div class="item-input">
+                <input id="ref" name="ref" type="text" placeholder="Reference" readonly />
+              </div>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="item-content">
+            <div class="item-inner"> 
+              <div class="item-title label">Title</div>
+              <div class="item-input">
+                <input id="title" name="title" type="text" placeholder="Title" />
+              </div>
+            </div>
+          </div>
+        </li>
+        <li class="align-top">
+          <div class="item-content">
+            <div class="item-inner"> 
+              <div class="item-title label">Description</div>
+              <div class="item-input">
+                <textarea id="desc" name="desc"></textarea>
+              </div>
+            </div>
+          </div>
+        </li>
+      </ul></form>
       <div class="content-block">
-        <div class="content-block-inner">
-          <p>Order Status: PORN</p>
-          <p>Account No: 1-52345231</p>
-          <p>Service ID: 60322405240</p>
-        </div>
+        <a href="#" onclick="createIris()" class="button button-big button-fill color-green form-to-data">Submit</a>
       </div>
     </div>
   </div>

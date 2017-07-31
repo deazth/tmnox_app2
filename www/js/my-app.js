@@ -7,6 +7,7 @@ var contentBlock;
 var mainURL = 'http://localhost:8080/NoxMW';
 var loggedIn = false;
 var UsersInfo = {};
+var createIrisType;
 
 // Initialize your app
 var myApp = new Framework7();
@@ -21,70 +22,123 @@ var mainView = myApp.addView('.view-main', {
 });
 
 // page inits
-myApp.onPageInit('index', function (page) {
-  if (!loggedIn) {
-      mainView.router.loadPage('login.html');
-  }
-}).trigger(); 
+  myApp.onPageInit('index', function (page) {
+    if (!loggedIn) {
+        mainView.router.loadPage('login.html');
+    }
+  }).trigger(); 
 
-myApp.onPageInit('login-screen', function (page) {
+  myApp.onPageInit('login-screen', function (page) {
 
-  loggedIn = false;
+    loggedIn = false;
 
-  var pageContainer = $$(page.container);
-  pageContainer.find('.button').on('click', function () {
-    UsersInfo = myApp.formToData('#login-form');
-    // Handle username and password
-    validateLogin();
+    var pageContainer = $$(page.container);
+    pageContainer.find('.button').on('click', function () {
+      UsersInfo = myApp.formToData('#login-form');
+      // Handle username and password
+      validateLogin();
+
+    });
+  }); 
+
+  myApp.onPageInit('app_setting', function (page) {
+
+    var pageContainer = $$(page.container);
+    
+    pageContainer.find('#tdefault').on('click', function () {
+      document.getElementById("theSuperMainView").className = "views";
+    });
+
+    pageContainer.find('#tdark').on('click', function () {
+      document.getElementById("theSuperMainView").className = "views layout-dark";
+    });
+
+    pageContainer.find('#twhite').on('click', function () {
+      document.getElementById("theSuperMainView").className = "views layout-white";
+    });
+
+  }); 
+
+  myApp.onPageInit('bill_summ', function (page) {
+    myApp.alert('init bill sum called');
+    document.getElementById("billsumpt").innerHTML = "BA#" + SearchParam.banumber;
+    baLoadAccInfo("ba_summ_block");
+  });  
+
+  myApp.onPageInit('order_summ', function (page) {
+    document.getElementById("orderSumTopTitle").innerHTML = "Order: " + SearchParam.ordernumber;
+  });
+
+  myApp.onPageInit('order_activities', function (page) {
+    document.getElementById("orderActTitle").innerHTML = "Order Activities: " + SearchParam.ordernumber;
+    soLoadSiebelActivity(sblActivity, "siebel_item_lst");
+    soLoadSiebelActivity(swiftActivity, "swift_item_lst");
+  });
+
+  myApp.onPageInit('ba_trial_bill', function (page){
+    document.getElementById("trialbillpt").innerHTML = "Trial Bill: " + SearchParam.banumber;
+  });
+
+  myApp.onPageInit('ba_sr_summary', function (page){
+    document.getElementById("basrpt").innerHTML = "SR Summary: " + SearchParam.banumber;
+    baLoadAccInfo("sr_summ_block");
+
+    // Pull to refresh content
+      var ptrContent = $$(page.container).find('.pull-to-refresh-content');
+      // Add 'refresh' listener on it
+      ptrContent.on('refresh', function (e) {
+          // reload current page
+          mainView.router.reloadPage("ba_sr_summary.html");
+          myApp.pullToRefreshDone();
+      });
 
   });
-}); 
 
-myApp.onPageInit('bill_summ', function (page) {
-  myApp.alert('init bill sum called');
-  document.getElementById("billsumpt").innerHTML = "BA#" + SearchParam.banumber;
-  baLoadAccInfo("ba_summ_block");
-});  
+  myApp.onPageInit('ba_h_pymt', function (page){
+    document.getElementById("pymthpt").innerHTML = "Payment History: " + SearchParam.banumber;
 
-myApp.onPageInit('order_summ', function (page) {
-  document.getElementById("orderSumTopTitle").innerHTML = "Order: " + SearchParam.ordernumber;
-  soLoadSiebelActivity(sblActivity, "siebel_item_lst");
-  soLoadSiebelActivity(swiftActivity, "swift_item_lst");
-});
+    // Pull to refresh content
+      var ptrContent = $$(page.container).find('.pull-to-refresh-content');
+      // Add 'refresh' listener on it
+      ptrContent.on('refresh', function (e) {
+          // reload current page
+          mainView.router.reloadPage("ba_h_pymt.html");
+          myApp.pullToRefreshDone();
+      });
+  });
 
-myApp.onPageInit('ba_trial_bill', function (page){
-  document.getElementById("trialbillpt").innerHTML = "Trial Bill: " + SearchParam.banumber;
-});
-
-myApp.onPageInit('ba_sr_summary', function (page){
-  document.getElementById("basrpt").innerHTML = "SR Summary: " + SearchParam.banumber;
-  baLoadAccInfo("sr_summ_block");
-
-  // Pull to refresh content
-    var ptrContent = $$(page.container).find('.pull-to-refresh-content');
-    // Add 'refresh' listener on it
-    ptrContent.on('refresh', function (e) {
-        // reload current page
-        mainView.router.reloadPage("ba_sr_summary.html");
-        myApp.pullToRefreshDone();
-    });
-
-});
-
-myApp.onPageInit('ba_h_pymt', function (page){
-  document.getElementById("pymthpt").innerHTML = "Payment History: " + SearchParam.banumber;
-
-  // Pull to refresh content
-    var ptrContent = $$(page.container).find('.pull-to-refresh-content');
-    // Add 'refresh' listener on it
-    ptrContent.on('refresh', function (e) {
-        // reload current page
-        mainView.router.reloadPage("ba_h_pymt.html");
-        myApp.pullToRefreshDone();
-    });
-});
+  myApp.onPageInit('create_iris_form', function (page) {
+    //document.getElementById("billsumpt").innerHTML = "BA#" + SearchParam.banumber;
+    initIrisCreatePage("ba_summ_block", "Missing Order");
+  });
 
 // search functions
+
+function initIrisCreatePage(refid, irisType){
+
+  var irisContent = {
+      'urg' : 'medium'
+    , 'svc' : 'Fulfillment'
+    , 'svcseg' : 'mm'
+    , 'area' : 'kl'
+    , 'subarea' : 'paloh hinai'
+    , 'probtype' : 'qos'
+    , 'ref' : refid
+    , 'title' : irisType
+    , 'desc' : 'some random masalah'
+  };
+
+  document.getElementById("urg").value = irisContent.urg;
+  document.getElementById("svc").value = irisContent.svc;
+  document.getElementById("svcseg").value = irisContent.svcseg;
+  document.getElementById("area").value = irisContent.area;
+  document.getElementById("subarea").value = irisContent.subarea;
+  document.getElementById("probtype").value = irisContent.probtype;
+  document.getElementById("ref").value = irisContent.ref;
+  document.getElementById("title").value = irisContent.title;
+  document.getElementById("desc").innerHTML = irisContent.desc;
+
+}
 function searchBA(){
   SearchParam = myApp.formToData('#ba-s-form');
   SearchParam.sType = "searchBA";
@@ -260,5 +314,12 @@ function cHttpGet(theURL){
   Httpreq.open("GET",theURL,false);
   Httpreq.send(null);
   return Httpreq.responseText;   
+}
+
+function createIris(){
+  var irisForm = myApp.formToData('#c-iris-form');
+
+
+
 }
 
