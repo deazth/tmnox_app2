@@ -59,6 +59,16 @@ var mainView = myApp.addView('.view-main', {
 
   }); 
 
+  myApp.onPageInit('preIrisCreate', function (page) {
+
+    var pageContainer = $$(page.container);
+    
+    pageContainer.find('#pci_05').on('click', function () {
+      document.getElementById("theSuperMainView").className = "views";
+    });
+
+  });
+
   myApp.onPageInit('bill_summ', function (page) {
     myApp.alert('init bill sum called');
     document.getElementById("billsumpt").innerHTML = "BA#" + SearchParam.banumber;
@@ -114,6 +124,20 @@ var mainView = myApp.addView('.view-main', {
 
 // search functions
 
+function openCreateIris(irisType){
+
+  createIrisType = irisType;
+
+  if(createIrisType == 'pci_05'){
+
+  } else if(createIrisType == 'pci_03'){
+    if(SearchParam.)
+  } else {
+
+  }
+
+  mainView.loadPage("create_iris.html");
+}
 function initIrisCreatePage(refid, irisType){
 
   var irisContent = {
