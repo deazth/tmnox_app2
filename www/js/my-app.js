@@ -8,9 +8,12 @@ var mainURL = 'http://localhost:8080/NoxMW';
 var loggedIn = false;
 var UsersInfo = {};
 var createIrisType;
+var SharedSearch = {};
 
 // Initialize your app
-var myApp = new Framework7();
+var myApp = new Framework7({
+  swipePanel: 'right'
+});
 
 // Export selectors engine
 var $$ = Dom7;
@@ -31,6 +34,8 @@ var mainView = myApp.addView('.view-main', {
   myApp.onPageInit('login-screen', function (page) {
 
     loggedIn = false;
+
+    myApp.params.swipePanel = false;
 
     var pageContainer = $$(page.container);
     pageContainer.find('.button').on('click', function () {
@@ -62,9 +67,38 @@ var mainView = myApp.addView('.view-main', {
   myApp.onPageInit('preIrisCreate', function (page) {
 
     var pageContainer = $$(page.container);
+
+    // check for search order history
+    if(SearchParam.ordernumber){
+
+    }
     
+    pageContainer.find('#pci_01').on('click', function () {
+      openCreateIris("pci_01");
+    });
+
+    pageContainer.find('#pci_02').on('click', function () {
+      openCreateIris("pci_02");
+    });
+
+    pageContainer.find('#pci_03').on('click', function () {
+      openCreateIris("pci_03");
+    });
+
+    pageContainer.find('#pci_04').on('click', function () {
+      openCreateIris("pci_04");
+    });
+
     pageContainer.find('#pci_05').on('click', function () {
-      document.getElementById("theSuperMainView").className = "views";
+      openCreateIris("pci_05");
+    });
+
+    pageContainer.find('#pci_06').on('click', function () {
+      openCreateIris("pci_06");
+    });
+
+    pageContainer.find('#pci_07').on('click', function () {
+      openCreateIris("pci_07");
     });
 
   });
@@ -127,14 +161,6 @@ var mainView = myApp.addView('.view-main', {
 function openCreateIris(irisType){
 
   createIrisType = irisType;
-
-  if(createIrisType == 'pci_05'){
-
-  } else if(createIrisType == 'pci_03'){
-    if(SearchParam.)
-  } else {
-
-  }
 
   mainView.loadPage("create_iris.html");
 }
@@ -279,6 +305,7 @@ function searchOrder(){
 function validateLogin(){
   myApp.alert('Username: ' + UsersInfo.username + ', Password: ' + UsersInfo.password + ', admin: ' + UsersInfo.adminmode, function () {
   loggedIn = true;
+  myApp.params.swipePanel = 'right';
     mainView.loadPage("index.html");
   });
 }
