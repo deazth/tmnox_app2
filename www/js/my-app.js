@@ -7,7 +7,6 @@ var contentBlock;
 var mainURL = 'http://localhost:8080/NoxMW';
 var loggedIn = false;
 var UsersInfo = {};
-var createIrisType;
 var SharedSearch = {};
 
 // Initialize your app
@@ -68,39 +67,45 @@ var mainView = myApp.addView('.view-main', {
 
     var pageContainer = $$(page.container);
 
-    // check for search order history
-    if(SearchParam.ordernumber){
+    var irChoices = document.getElementsByClassName(SharedSearch.searchFrom)
+    for (var i=0; i < irChoices.length; i++) {
+        irChoices[i].innerHTML = SharedSearch.searchID;
+    }
 
+    // check for search order history
+    if(SharedSearch.searchFrom == 'searchBA'){
+      pageContainer.find('#pci_05').on('click', function () {
+        openCreateIris("pci_05");
+      });
+
+      pageContainer.find('#pci_06').on('click', function () {
+        openCreateIris("pci_06");
+      });
+
+      pageContainer.find('#pci_07').on('click', function () {
+        openCreateIris("pci_07");
+      });
+    } else if(SharedSearch.searchFrom == 'searchOrder'){
+      pageContainer.find('#pci_01').on('click', function () {
+        openCreateIris("pci_01");
+      });
+
+      pageContainer.find('#pci_02').on('click', function () {
+        openCreateIris("pci_02");
+      });
+      
+      pageContainer.find('#pci_04').on('click', function () {
+        openCreateIris("pci_04");
+      });
+    } else if(SharedSearch.searchFrom == 'searchCTT'){
+      pageContainer.find('#pci_03').on('click', function () {
+        openCreateIris("pci_03");
+      });
+    } else {
+      myApp.alert('Need to search something first', 'NOX');
+      mainView.router.loadPage('index.html');
     }
     
-    pageContainer.find('#pci_01').on('click', function () {
-      openCreateIris("pci_01");
-    });
-
-    pageContainer.find('#pci_02').on('click', function () {
-      openCreateIris("pci_02");
-    });
-
-    pageContainer.find('#pci_03').on('click', function () {
-      openCreateIris("pci_03");
-    });
-
-    pageContainer.find('#pci_04').on('click', function () {
-      openCreateIris("pci_04");
-    });
-
-    pageContainer.find('#pci_05').on('click', function () {
-      openCreateIris("pci_05");
-    });
-
-    pageContainer.find('#pci_06').on('click', function () {
-      openCreateIris("pci_06");
-    });
-
-    pageContainer.find('#pci_07').on('click', function () {
-      openCreateIris("pci_07");
-    });
-
   });
 
   myApp.onPageInit('bill_summ', function (page) {
@@ -153,28 +158,29 @@ var mainView = myApp.addView('.view-main', {
 
   myApp.onPageInit('create_iris_form', function (page) {
     //document.getElementById("billsumpt").innerHTML = "BA#" + SearchParam.banumber;
-    initIrisCreatePage("ba_summ_block", "Missing Order");
+    initIrisCreatePage();
   });
 
 // search functions
 
 function openCreateIris(irisType){
 
-  createIrisType = irisType;
+  SharedSearch.irisType = irisType;
 
   mainView.loadPage("create_iris.html");
 }
-function initIrisCreatePage(refid, irisType){
+function initIrisCreatePage(){
 
+  
   var irisContent = {
       'urg' : 'medium'
-    , 'svc' : 'Fulfillment'
+    , 'svc' : 'NOVA'
     , 'svcseg' : 'mm'
     , 'area' : 'kl'
     , 'subarea' : 'paloh hinai'
     , 'probtype' : 'qos'
-    , 'ref' : refid
-    , 'title' : irisType
+    , 'ref' : SharedSearch.searchID
+    , 'title' : SharedSearch.irisType
     , 'desc' : 'some random masalah'
   };
 
@@ -189,12 +195,27 @@ function initIrisCreatePage(refid, irisType){
   document.getElementById("desc").innerHTML = irisContent.desc;
 
 }
+
 function searchBA(){
   SearchParam = myApp.formToData('#ba-s-form');
-  SearchParam.sType = "searchBA";
+  var whatToSearch;
+
+  if(SearchParam.banumber){
+    SharedSearch.searchID = SearchParam.banumber;
+    whatToSearch = 'bano';
+  } else if(SearchParam.serviceno){
+    SharedSearch.searchID = SearchParam.serviceno;
+    whatToSearch = 'svcno';
+  } else {
+    myApp.alert('Input must not be empty', 'Error');
+    return;
+  }
+
+  SharedSearch.searchFrom = 'searchBA';
   //  alert(SBA_SearchParam.banumber);
 
-  var baUrl = mainURL + '/brm/get_acc_info.jsp?bano=' + SearchParam.banumber;
+  var baUrl = mainURL + '/brm/get_acc_info.jsp?' + whatToSearch + '=' 
+    + SearchParam.banumber + '&stype=' + whatToSearch;
 
   //myApp.alert('Searching for ' + SearchParam.banumber, 'Ouch');
 
@@ -250,8 +271,15 @@ function searchBA(){
 
 function searchOrder(){
   SearchParam = myApp.formToData('#order-s-form');
-  SearchParam.sType = "searchOrder";
-  //  alert(SBA_SearchParam.banumber);
+
+if(SearchParam.ordernumber){
+    SharedSearch.searchID = SearchParam.ordernumber;
+  } else {
+    myApp.alert('Input must not be empty', 'Error');
+    return;
+  }
+
+  SharedSearch.searchFrom = 'searchOrder';
 
   sblActivity = {'activities':[
     {
@@ -303,11 +331,11 @@ function searchOrder(){
 }
 
 function validateLogin(){
-  myApp.alert('Username: ' + UsersInfo.username + ', Password: ' + UsersInfo.password + ', admin: ' + UsersInfo.adminmode, function () {
+  // myApp.alert('Username: ' + UsersInfo.username + ', Password: ' + UsersInfo.password + ', admin: ' + UsersInfo.adminmode, function () {
   loggedIn = true;
   myApp.params.swipePanel = 'right';
-    mainView.loadPage("index.html");
-  });
+  mainView.loadPage("index.html");
+  // });
 }
 
 // Billing related functions
