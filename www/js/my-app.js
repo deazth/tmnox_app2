@@ -9,6 +9,22 @@ var loggedIn = false;
 var UsersInfo = {};
 var SharedSearch = {};
 
+var irisLOVMappings = {
+  "NOVA-ASSURANCE" : {
+    "area" : "NOVA-ASSURANCE",
+    "subarea" : {
+
+    }
+  },
+  "NOVA-BILLING" : {
+    "area" : "NOVA-BILLING"
+  },
+  "NOVA-FULFILLMENT" : {
+    "area" : "NOVA-FULFILLMENT"
+  }
+  
+};
+
 // Initialize your app
 var myApp = new Framework7({
   swipePanel: 'right'
@@ -74,8 +90,8 @@ var mainView = myApp.addView('.view-main', {
 
     // check for search order history
     if(SharedSearch.searchFrom == 'searchBA'){
-      pageContainer.find('#pci_05').on('click', function () {
-        openCreateIris("pci_05");
+      pageContainer.find('#pci_08').on('click', function () {
+        openCreateIris("pci_08");
       });
 
       pageContainer.find('#pci_06').on('click', function () {
@@ -93,13 +109,17 @@ var mainView = myApp.addView('.view-main', {
       pageContainer.find('#pci_02').on('click', function () {
         openCreateIris("pci_02");
       });
-      
+
+      pageContainer.find('#pci_03').on('click', function () {
+        openCreateIris("pci_03");
+      });
+
       pageContainer.find('#pci_04').on('click', function () {
         openCreateIris("pci_04");
       });
     } else if(SharedSearch.searchFrom == 'searchCTT'){
-      pageContainer.find('#pci_03').on('click', function () {
-        openCreateIris("pci_03");
+      pageContainer.find('#pci_05').on('click', function () {
+        openCreateIris("pci_05");
       });
     } else {
       myApp.alert('Need to search something first', 'NOX');
@@ -169,11 +189,12 @@ function openCreateIris(irisType){
 
   mainView.loadPage("create_iris.html");
 }
+
 function initIrisCreatePage(){
 
   
   var irisContent = {
-      'urg' : 'medium'
+      'urg' : 'Medium'
     , 'svc' : 'NOVA'
     , 'svcseg' : 'mm'
     , 'area' : 'kl'
@@ -401,4 +422,6 @@ function createIris(){
 
 
 }
+
+
 

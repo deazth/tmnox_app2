@@ -18,9 +18,9 @@
         <li>
           <div class="item-content">
             <div class="item-inner"> 
-              <div class="item-title label">Urgency</div>
+              <div class="item-title label">Contact</div>
               <div class="item-input">
-                <input id="urg" name="urg" type="text" placeholder="Urgency" readonly />
+                <input id="contact" name="contact" type="text" placeholder="Username" readonly />
               </div>
             </div>
           </div>
@@ -28,7 +28,36 @@
         <li>
           <div class="item-content">
             <div class="item-inner"> 
-              <div class="item-title label">Service</div>
+              <div class="item-title label">Notify By</div>
+              <div class="item-input">
+                <select id="notifyby" name="notifyby">
+                  <option value="1">E-mail</option>
+                  <option value="2">Telephone</option>
+                  <option value="3">None</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="item-content">
+            <div class="item-inner"> 
+              <div class="item-title label">Urgency</div>
+              <div class="item-input">
+                <select id="urg" name="urg">
+                  <option value="1">1 - Critical</option>
+                  <option value="2">2 - High</option>
+                  <option value="3">3 - Average</option>
+                  <option value="4">4 - Low</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="item-content">
+            <div class="item-inner"> 
+              <div class="item-title label">Affected Service</div>
               <div class="item-input">
                 <input id="svc" name="svc" type="text" placeholder="NOVA" readonly />
               </div>
@@ -40,7 +69,27 @@
             <div class="item-inner"> 
               <div class="item-title label">Service Segment</div>
               <div class="item-input">
-                <input id="svcseg" name="svcseg" type="text" placeholder="Service Segment" readonly />
+                <select id="svcseg" name="svcseg">
+                  <option value="1">TM</option>
+                  <option value="2">HSBA</option>
+                  <option value="3">Mass Market</option>
+                  <option value="4">Managed Account</option>
+                  <option value="5">Global &amp; Wholesale</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="item-content">
+            <div class="item-inner"> 
+              <div class="item-title label">Category</div>
+              <div class="item-input">
+                <select id="category" name="category">
+                  <option value="1">Complaint</option>
+                  <option value="2">Incident</option>
+                  <option value="3">Request for information</option>
+                </select>
               </div>
             </div>
           </div>
@@ -78,7 +127,7 @@
         <li>
           <div class="item-content">
             <div class="item-inner"> 
-              <div class="item-title label">Reference</div>
+              <div class="item-title label">Order/SR/TT/Ref</div>
               <div class="item-input">
                 <input id="ref" name="ref" type="text" placeholder="Reference" readonly />
               </div>
