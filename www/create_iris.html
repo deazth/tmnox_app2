@@ -20,7 +20,7 @@
             <div class="item-inner"> 
               <div class="item-title label">Contact</div>
               <div class="item-input">
-                <input id="contact" name="contact" type="text" placeholder="Username" readonly />
+                <input id="contact" name="contact" type="text" placeholder="Username" disabled >
               </div>
             </div>
           </div>
@@ -59,7 +59,7 @@
             <div class="item-inner"> 
               <div class="item-title label">Affected Service</div>
               <div class="item-input">
-                <input id="svc" name="svc" type="text" placeholder="NOVA" readonly />
+                <input id="svc" name="svc" type="text" placeholder="NOVA" disabled >
               </div>
             </div>
           </div>
@@ -99,7 +99,11 @@
             <div class="item-inner"> 
               <div class="item-title label">Area</div>
               <div class="item-input">
-                <input id="area" name="area" type="text" placeholder="Area" readonly />
+                <select id="area" name="area">
+                  <option value="NOVA-ASSURANCE">NOVA-ASSURANCE</option>
+                  <option value="NOVA-BILLING">NOVA-BILLING</option>
+                  <option value="NOVA-FULFILLMENT">NOVA-FULFILLMENT</option>
+                </select>
               </div>
             </div>
           </div>
@@ -109,7 +113,7 @@
             <div class="item-inner"> 
               <div class="item-title label">Sub-Area</div>
               <div class="item-input">
-                <input id="subarea" name="subarea" type="text" placeholder="Sub-Area" readonly />
+                <select id="subarea" name="subarea"></select>
               </div>
             </div>
           </div>
@@ -119,7 +123,7 @@
             <div class="item-inner"> 
               <div class="item-title label">Problem Type</div>
               <div class="item-input">
-                <input id="probtype" name="probtype" type="text" placeholder="Problem Type" readonly />
+                <select id="probtype" name="probtype"></select>
               </div>
             </div>
           </div>
@@ -129,7 +133,7 @@
             <div class="item-inner"> 
               <div class="item-title label">Order/SR/TT/Ref</div>
               <div class="item-input">
-                <input id="ref" name="ref" type="text" placeholder="Reference" readonly />
+                <input id="ref" name="ref" type="text" placeholder="Reference" />
               </div>
             </div>
           </div>
