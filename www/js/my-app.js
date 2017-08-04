@@ -195,7 +195,7 @@ function openCreateIris(irisType){
 
   SharedSearch.irisType = irisType;
 
-  mainView.loadPage("create_iris.html");
+  mainView.loadPage("iris_create.html");
 }
 
 function initIrisCreatePage(){

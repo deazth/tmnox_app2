@@ -1,0 +1,167 @@
+<div class="navbar">
+  <div class="navbar-inner">
+    <div class="left"><a href="#" class="back link"> <i class="icon icon-back"></i><span>Back</span></a></div>
+    <div class="center sliding" id="createIrisTitle">Close IRIS</div>
+    <div class="right">
+      <!-- Right link contains only icon - additional "icon-only" class-->
+      <a href="#" class="link icon-only open-panel"> <i class="icon icon-bars"></i></a>
+    </div>
+  </div>
+</div>
+<div class="pages">
+  <!-- Page, data-page contains page name-->
+  <div data-page="close_iris_form" class="page">
+    <!-- Scrollable page content-->
+    <div class="page-content">
+      <div class="content-block-title">Create IRIS</div>
+      <form id="c-iris-form" class="list-block"><ul>
+        <li>
+          <div class="item-content">
+            <div class="item-inner"> 
+              <div class="item-title label">SD#</div>
+              <div class="item-input">
+                <input id="sdnum" name="sdnum" type="text" placeholder="Username" disabled >
+              </div>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="item-content">
+            <div class="item-inner"> 
+              <div class="item-title label">Notify By</div>
+              <div class="item-input">
+                <select id="notifyby" name="notifyby">
+                  <option value="1">E-mail</option>
+                  <option value="2">Telephone</option>
+                  <option value="3">None</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="item-content">
+            <div class="item-inner"> 
+              <div class="item-title label">Urgency</div>
+              <div class="item-input">
+                <select id="urg" name="urg">
+                  <option value="1">1 - Critical</option>
+                  <option value="2">2 - High</option>
+                  <option value="3">3 - Average</option>
+                  <option value="4">4 - Low</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="item-content">
+            <div class="item-inner"> 
+              <div class="item-title label">Affected Service</div>
+              <div class="item-input">
+                <input id="svc" name="svc" type="text" placeholder="NOVA" disabled >
+              </div>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="item-content">
+            <div class="item-inner"> 
+              <div class="item-title label">Service Segment</div>
+              <div class="item-input">
+                <select id="svcseg" name="svcseg">
+                  <option value="1">TM</option>
+                  <option value="2">HSBA</option>
+                  <option value="3">Mass Market</option>
+                  <option value="4">Managed Account</option>
+                  <option value="5">Global &amp; Wholesale</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="item-content">
+            <div class="item-inner"> 
+              <div class="item-title label">Category</div>
+              <div class="item-input">
+                <select id="category" name="category">
+                  <option value="1">Complaint</option>
+                  <option value="2">Incident</option>
+                  <option value="3">Request for information</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="item-content">
+            <div class="item-inner"> 
+              <div class="item-title label">Area</div>
+              <div class="item-input">
+                <select id="area" name="area">
+                  <option value="NOVA-ASSURANCE">NOVA-ASSURANCE</option>
+                  <option value="NOVA-BILLING">NOVA-BILLING</option>
+                  <option value="NOVA-FULFILLMENT">NOVA-FULFILLMENT</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="item-content">
+            <div class="item-inner"> 
+              <div class="item-title label">Sub-Area</div>
+              <div class="item-input">
+                <select id="subarea" name="subarea"></select>
+              </div>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="item-content">
+            <div class="item-inner"> 
+              <div class="item-title label">Problem Type</div>
+              <div class="item-input">
+                <select id="probtype" name="probtype"></select>
+              </div>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="item-content">
+            <div class="item-inner"> 
+              <div class="item-title label">Order/SR/TT/Ref</div>
+              <div class="item-input">
+                <input id="ref" name="ref" type="text" placeholder="Reference" />
+              </div>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="item-content">
+            <div class="item-inner"> 
+              <div class="item-title label">Title</div>
+              <div class="item-input">
+                <input id="title" name="title" type="text" placeholder="Title" />
+              </div>
+            </div>
+          </div>
+        </li>
+        <li class="align-top">
+          <div class="item-content">
+            <div class="item-inner"> 
+              <div class="item-title label">Description</div>
+              <div class="item-input">
+                <textarea id="desc" name="desc"></textarea>
+              </div>
+            </div>
+          </div>
+        </li>
+      </ul></form>
+      <div class="content-block">
+        <a href="#" onclick="createIris()" class="button button-big button-fill color-green form-to-data">Submit</a>
+      </div>
+    </div>
+  </div>
+</div>
