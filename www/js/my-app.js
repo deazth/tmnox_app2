@@ -233,6 +233,17 @@ function initIrisCreatePage(){
 
 }
 
+function searchIris(){
+  SearchParam = myApp.formToData('#iris-s-form');
+
+  if(SearchParam.irisnumber){
+    SharedSearch.searchID = SearchParam.irisnumber;
+  } else {
+    myApp.alert('Input must not be empty', 'Error');
+    return;
+  }
+}
+
 function searchBA(){
   SearchParam = myApp.formToData('#ba-s-form');
   var whatToSearch;
@@ -434,7 +445,7 @@ function soLoadSiebelActivity(activityArr, blockname){
           '</div>' +
         '</div>' +
       '</li>';
-
+ 
       sblAContent = sblAContent + sblItem;
   }
 
