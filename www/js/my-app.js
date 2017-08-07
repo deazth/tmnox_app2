@@ -329,6 +329,57 @@ if(SearchParam.ordernumber){
 
   SharedSearch.searchFrom = 'searchOrder';
 
+  // search for the order summary
+  var searchURL = mainURL + '/brm/get_order_summ.jsp?ordernum=' + SharedSearch.searchID;
+  $.getJSON(searchURL, function(sblinfo){
+  
+    contentBlock = 
+        '<p>Name: ' + baInfo.name + '</p>' +
+        '<p>Bill Cycle: ' + baInfo.bp + '</p>' +
+        '<p>Bill Media: ' + baInfo.billmedia + '</p>' +
+        '<p>Address: ' + baInfo.address + '</p>' +
+        '<p>To Email: ' + baInfo.toemail + '</p>' +
+        '<p>CC Email: ' + baInfo.ccemail + '</p>' +
+        '<p>Mobile No: ' + baInfo.mobileno + '</p>' +
+        '<p>Current Outstanding: ' + baInfo.outstanding + '</p>';
+        mainView.loadPage("ba_summary.html");
+        
+        myApp.alert('Data fetcged ' + SearchParam.banumber, 'Ouch');
+  })
+    .fail(function(){
+      myApp.alert('Unable to fetch data for ' + SearchParam.banumber, 'Ouch');
+      return;
+    });
+
+  // then search for activities
+  swiftActivity = {'activities':[
+    {
+      'number':'1-45623125',
+      'status':'processing',
+      'name':'sample order 1'
+    },
+    {
+      'number':'1-45623126',
+      'status':'done',
+      'name':'sample order 2'
+    }
+  ]};
+
+  mainView.loadPage("order_summary.html");
+}
+
+function searchCTT(){
+  SearchParam = myApp.formToData('#ctt-s-form');
+
+if(SearchParam.cttnumber){
+    SharedSearch.searchID = SearchParam.cttnumber;
+  } else {
+    myApp.alert('Input must not be empty', 'Error');
+    return;
+  }
+
+  SharedSearch.searchFrom = 'searchCTT';
+
   sblActivity = {'activities':[
     {
       'number':'1-45623125',
