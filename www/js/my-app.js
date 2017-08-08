@@ -3,6 +3,8 @@ var SearchParam = {};
 var baInfo = {};
 var sblActivity = {};
 var swiftActivity = {}; 
+var sblInfos = {};
+var swiftInfos = {};
 var contentBlock;
 var mainURL = 'http://localhost:8080/NoxMW';
 var loggedIn = false;
@@ -126,6 +128,21 @@ var mainView = myApp.addView('.view-main', {
 
   myApp.onPageInit('order_summ', function (page) {
     document.getElementById("orderSumTopTitle").innerHTML = "Order: " + SearchParam.ordernumber;
+
+    if(sblInfos.error){
+      myApp.alert('No data fetched', 'NOX');
+      return;
+    }
+
+    var o_s_content = '<p>Name: ' + baInfo.name + '</p>' +
+        '<p>Bill Cycle: ' + baInfo.bp + '</p>' +
+        '<p>Bill Media: ' + baInfo.billmedia + '</p>' +
+        '<p>Address: ' + baInfo.address + '</p>' +
+        '<p>To Email: ' + baInfo.toemail + '</p>' +
+        '<p>CC Email: ' + baInfo.ccemail + '</p>' +
+        '<p>Mobile No: ' + baInfo.mobileno + '</p>' +
+        '<p>Current Outstanding: ' + baInfo.outstanding + '</p>';
+
   });
 
   myApp.onPageInit('order_activities', function (page) {
@@ -331,25 +348,14 @@ if(SearchParam.ordernumber){
 
   // search for the order summary
   var searchURL = mainURL + '/brm/get_order_summ.jsp?ordernum=' + SharedSearch.searchID;
-  $.getJSON(searchURL, function(sblinfo){
+  $.getJSON(searchURL, function(sblInfos){
   
-    contentBlock = 
-        '<p>Name: ' + baInfo.name + '</p>' +
-        '<p>Bill Cycle: ' + baInfo.bp + '</p>' +
-        '<p>Bill Media: ' + baInfo.billmedia + '</p>' +
-        '<p>Address: ' + baInfo.address + '</p>' +
-        '<p>To Email: ' + baInfo.toemail + '</p>' +
-        '<p>CC Email: ' + baInfo.ccemail + '</p>' +
-        '<p>Mobile No: ' + baInfo.mobileno + '</p>' +
-        '<p>Current Outstanding: ' + baInfo.outstanding + '</p>';
-        mainView.loadPage("ba_summary.html");
-        
-        myApp.alert('Data fetcged ' + SearchParam.banumber, 'Ouch');
   })
     .fail(function(){
-      myApp.alert('Unable to fetch data for ' + SearchParam.banumber, 'Ouch');
+      myApp.alert('Unable to fetch data for ' + SearchParam.ordernumber, 'Ouch');
       return;
     });
+
 
   // then search for activities
   swiftActivity = {'activities':[
