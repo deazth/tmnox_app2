@@ -21,6 +21,26 @@ var myApp = new Framework7({
 // Export selectors engine
 var $$ = Dom7;
 
+var getJSONabc = function(url, callback) {
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', url, true);
+    xhr.responseType = 'json';
+    
+    xhr.onload = function() {
+    
+        var status = xhr.status;
+        
+        if (status == 200) {
+            callback(null, xhr.response);
+        } else {
+            callback(status);
+        }
+    };
+    
+    xhr.send();
+};
+
 // Add view
 var mainView = myApp.addView('.view-main', {
     // Because we use fixed-through navbar we can enable dynamic navbar
@@ -54,6 +74,21 @@ var mainView = myApp.addView('.view-main', {
 
     });
   }); 
+
+  function validateLogin(){
+    // myApp.alert('Username: ' + UsersInfo.username + ', Password: ' + UsersInfo.password + ', admin: ' + UsersInfo.adminmode, function () {
+    loggedIn = true;
+    myApp.params.swipePanel = 'right';
+    
+    if(UsersInfo.username == 's53788'){
+      isAdmin = true;
+    } else {
+      isAdmin = false;
+    }
+    
+    mainView.loadPage("index.html");
+    // });
+  }
 
   myApp.onPageInit('app_setting', function (page) {
 
@@ -127,23 +162,83 @@ var mainView = myApp.addView('.view-main', {
   });  
 
   myApp.onPageInit('order_summ', function (page) {
+    hideAdminStuffs();
     document.getElementById("orderSumTopTitle").innerHTML = "Order: " + SearchParam.ordernumber;
 
-    if(sblInfos.error){
+    if(sblInfos.error || !sblInfos){
       myApp.alert('No data fetched', 'NOX');
-      return;
+      mainView.router.loadPage('index.html');
     }
 
-    var o_s_content = '<p>Name: ' + baInfo.name + '</p>' +
-        '<p>Bill Cycle: ' + baInfo.bp + '</p>' +
-        '<p>Bill Media: ' + baInfo.billmedia + '</p>' +
-        '<p>Address: ' + baInfo.address + '</p>' +
-        '<p>To Email: ' + baInfo.toemail + '</p>' +
-        '<p>CC Email: ' + baInfo.ccemail + '</p>' +
-        '<p>Mobile No: ' + baInfo.mobileno + '</p>' +
-        '<p>Current Outstanding: ' + baInfo.outstanding + '</p>';
+    // set the content for siebel summary
+    var o_s_content = 
+        '<p>Account Name : ' + sblInfos.acc_name + '</p>' +
+        '<p>Bill Cycle   : ' + sblInfos.order_type + '</p>' +
+        '<p>Bill Media   : ' + sblInfos.order_status + '</p>';
+
+    // set the content for service list
+    var svcounter = 0;
+    var o_s_svcs = '<p>Services: <br />';
+
+    for(svcs in sblInfos.services){
+      o_s_svcs = o_s_svcs
+        + '    ' + sblInfos.services[svcs].svc_id + ' - ' + sblInfos.services[svcs].product_name + '<br />';
+      svcounter = svcounter + 1;
+    }
+
+    o_s_svcs = o_s_svcs + "</p>";
+
+    if(svcounter > 0){
+      o_s_content = o_s_content + o_s_svcs;
+    }
+
+    document.getElementById("o_s_novainfo").innerHTML = o_s_content;
 
   });
+
+function searchOrder(){
+  SearchParam = myApp.formToData('#order-s-form');
+
+  if(SearchParam.ordernumber){
+    SharedSearch.searchID = SearchParam.ordernumber;
+  } else {
+    myApp.alert('Input must not be empty', 'Error');
+    return;
+  }
+
+  SharedSearch.searchFrom = 'searchOrder';
+
+  // search for the order summary
+  var searchURL = mainURL + '/orderctt/get_order_summ.jsp?ordernum=' + SharedSearch.searchID;
+  // myApp.alert(searchURL);
+
+  $.getJSON(searchURL, function(retjson){
+    sblInfos = retjson;
+    // myApp.alert(JSON.stringify(sblInfos));
+  })
+    .fail(function(){
+      myApp.alert('Unable to fetch data for ' + SearchParam.ordernumber, 'Ouch');
+      return;
+    });
+
+
+  // then search for activities
+  swiftActivity = {'activities':[
+    {
+      'number':'1-45623125',
+      'status':'processing',
+      'name':'sample order 1'
+    },
+    {
+      'number':'1-45623126',
+      'status':'done',
+      'name':'sample order 2'
+    }
+  ]};
+
+  mainView.loadPage("orderctt/order_summary.html");
+}
+
 
   myApp.onPageInit('order_activities', function (page) {
     document.getElementById("orderActTitle").innerHTML = "Order Activities: " + SearchParam.ordernumber;
@@ -284,95 +379,31 @@ function searchBA(){
 
   //myApp.alert('Searching for ' + SearchParam.banumber, 'Ouch');
 
-
-  /*
-  $.getJSON(baUrl, function(baInfo){
-  
-    contentBlock = 
-        '<p>Name: ' + baInfo.name + '</p>' +
-        '<p>Bill Cycle: ' + baInfo.bp + '</p>' +
-        '<p>Bill Media: ' + baInfo.billmedia + '</p>' +
-        '<p>Address: ' + baInfo.address + '</p>' +
-        '<p>To Email: ' + baInfo.toemail + '</p>' +
-        '<p>CC Email: ' + baInfo.ccemail + '</p>' +
-        '<p>Mobile No: ' + baInfo.mobileno + '</p>' +
-        '<p>Current Outstanding: ' + baInfo.outstanding + '</p>';
-        mainView.loadPage("ba_summary.html");
-        
-        myApp.alert('Data fetcged ' + SearchParam.banumber, 'Ouch');
-  })
-    .fail(function(){
-      myApp.alert('Unable to fetch data for ' + SearchParam.banumber, 'Ouch');
-    });
-
-    */
-
-  //get the BA info
-  baInfo = {
-    'name':'Siti Pelanggan Binti Abahnye',
-    'mobileno':'019-3652001',
-    'billmedia':'0',
-    'bp':'10',
-    'address':'22|baker street|Tronoh, Kolo Piloh',
-    'toemail':'abu@websitekoi.kom',
-    'ccemail':'',
-    'outstanding':'315.50'
-  };
+  // myApp.alert(baUrl);
 
 
-  contentBlock = 
-        '<p>Name: ' + baInfo.name + '</p>' +
-        '<p>Bill Cycle: ' + baInfo.bp + '</p>' +
-        '<p>Bill Media: ' + baInfo.billmedia + '</p>' +
-        '<p>Address: ' + baInfo.address + '</p>' +
-        '<p>To Email: ' + baInfo.toemail + '</p>' +
-        '<p>CC Email: ' + baInfo.ccemail + '</p>' +
-        '<p>Mobile No: ' + baInfo.mobileno + '</p>' +
-        '<p>Current Outstanding: ' + baInfo.outstanding + '</p>';
-
-  mainView.loadPage("ba_summary.html");
-  
-}
-
-function searchOrder(){
-  SearchParam = myApp.formToData('#order-s-form');
-
-if(SearchParam.ordernumber){
-    SharedSearch.searchID = SearchParam.ordernumber;
-  } else {
-    myApp.alert('Input must not be empty', 'Error');
-    return;
-  }
-
-  SharedSearch.searchFrom = 'searchOrder';
-
-  // search for the order summary
-  var searchURL = mainURL + '/brm/get_order_summ.jsp?ordernum=' + SharedSearch.searchID;
-  $.getJSON(searchURL, function(sblInfos){
-  
-  })
-    .fail(function(){
-      myApp.alert('Unable to fetch data for ' + SearchParam.ordernumber, 'Ouch');
-      return;
-    });
-
-
-  // then search for activities
-  swiftActivity = {'activities':[
-    {
-      'number':'1-45623125',
-      'status':'processing',
-      'name':'sample order 1'
-    },
-    {
-      'number':'1-45623126',
-      'status':'done',
-      'name':'sample order 2'
+  getJSONabc(baUrl,  function(err, data) {
+    
+    if (err != null) {
+        myApp.alert('error' + err);
+    } else {
+      myApp.alert('data fetched');
+      contentBlock = 
+          '<p>Name: ' + data.name + '</p>' +
+          '<p>Bill Cycle: ' + data.bp + '</p>' +
+          '<p>Bill Media: ' + data.billmedia + '</p>' +
+          '<p>Address: ' + data.address + '</p>' +
+          '<p>To Email: ' + data.toemail + '</p>' +
+          '<p>CC Email: ' + data.ccemail + '</p>' +
+          '<p>Mobile No: ' + data.mobileno + '</p>' +
+          '<p>Current Outstanding: ' + data.outstanding + '</p>';
+      mainView.loadPage("bills/ba_summary.html");
+      // mainView.router.loadPage('ba_summary.html');
     }
-  ]};
-
-  mainView.loadPage("order_summary.html");
+});
+  
 }
+
 
 function searchCTT(){
   SearchParam = myApp.formToData('#ctt-s-form');
@@ -435,18 +466,7 @@ if(SearchParam.cttnumber){
   mainView.loadPage("order_summary.html");
 }
 
-function validateLogin(){
-  // myApp.alert('Username: ' + UsersInfo.username + ', Password: ' + UsersInfo.password + ', admin: ' + UsersInfo.adminmode, function () {
-  loggedIn = true;
-  myApp.params.swipePanel = 'right';
-  
-  if(UsersInfo.adminmode == 'on'){
-    isAdmin = true;
-  }
-  
-  mainView.loadPage("index.html");
-  // });
-}
+
 
 function hideAdminStuffs(){
   if(isAdmin == false){
