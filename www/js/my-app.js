@@ -797,25 +797,25 @@ function searchBA() {
   // myApp.alert(baUrl);
 
 
-  getJSONabc(baUrl, function (err, data) {
+  // getJSONabc(baUrl, function (err, data) {
 
-    if (err != null) {
-      myApp.alert('error' + err);
-    } else {
-      myApp.alert('data fetched');
+  //   if (err != null) {
+  //     myApp.alert('error' + err);
+  //   } else {
+  //     myApp.alert('data fetched');
       contentBlock =
-        '<p>Name: ' + data.name + '</p>' +
-        '<p>Bill Cycle: ' + data.bp + '</p>' +
-        '<p>Bill Media: ' + data.billmedia + '</p>' +
-        '<p>Address: ' + data.address + '</p>' +
-        '<p>To Email: ' + data.toemail + '</p>' +
-        '<p>CC Email: ' + data.ccemail + '</p>' +
-        '<p>Mobile No: ' + data.mobileno + '</p>' +
-        '<p>Current Outstanding: ' + data.outstanding + '</p>';
+        '<p>Name      : Pelanggan A</p>' +
+        '<p>Bill Cycle: 16</p>' +
+        '<p>Bill Media: EMail</p>' +
+        '<p>Address   : 22, Baker Street</p>' +
+        '<p>To Email  : a_bu@email.kom</p>' +
+        '<p>CC Email  : </p>' +
+        '<p>Mobile No : 01111111111</p>' +
+        '<p>Current Outstanding: 301.45s</p>';
       mainView.loadPage("bills/ba_summary.html");
       // mainView.router.loadPage('ba_summary.html');
-    }
-  });
+  //   }
+  // });
 
 }
 
