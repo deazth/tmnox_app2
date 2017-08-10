@@ -5,12 +5,14 @@ var sblActivity = {};
 var sblInfos = {};
 var swiftInfos = {};
 var osmInfos = {};
+var eaiActivities = {};
 var contentBlock;
 var mainURL = 'http://t21php.pub.bweas.tm.com.my/tmnox_php';
 var loggedIn = false;
 var UsersInfo = {};
 var SharedSearch = {};
 var isAdmin;
+var irisContent;
 
 // Initialize your app
 var myApp = new Framework7({
@@ -41,6 +43,37 @@ var getJSONabc = function (url, callback) {
   xhr.send();
 };
 
+function formatXml(xml) {
+    var formatted = '';
+    var reg = /(>)(<)(\/*)/g;
+    xml = xml.replace(reg, '$1\r\n$2$3');
+    var pad = 0;
+    jQuery.each(xml.split('\r\n'), function(index, node) {
+        var indent = 0;
+        if (node.match( /.+<\/\w[^>]*>$/ )) {
+            indent = 0;
+        } else if (node.match( /^<\/\w/ )) {
+            if (pad != 0) {
+                pad -= 1;
+            }
+        } else if (node.match( /^<\w[^>]*[^\/]>.*$/ )) {
+            indent = 1;
+        } else {
+            indent = 0;
+        }
+
+        var padding = '';
+        for (var i = 0; i < pad; i++) {
+            padding += '  ';
+        }
+
+        formatted += padding + node + '\r\n';
+        pad += indent;
+    });
+
+    return formatted;
+}
+
 // Add view
 var mainView = myApp.addView('.view-main', {
   // Because we use fixed-through navbar we can enable dynamic navbar
@@ -63,6 +96,7 @@ myApp.onPageInit('login-screen', function (page) {
   isAdmin = false;
   SharedSearch = {};
   UsersInfo = {};
+  SharedSearch.svcsegment = 3;
 
   myApp.params.swipePanel = false;
 
@@ -130,41 +164,120 @@ myApp.onPageInit('preIrisCreate', function (page) {
 
   var pageContainer = $$(page.container);
 
-  var irChoices = document.getElementsByClassName(SharedSearch.searchFrom)
+
+  var irChoices = document.getElementsByClassName('invilist');
   for (var i = 0; i < irChoices.length; i++) {
-    irChoices[i].innerHTML = SharedSearch.searchID;
+    irChoices[i].style.display = 'none';
+  }
+
+  irChoices = document.getElementsByClassName(SharedSearch.searchFrom);
+  for (var i = 0; i < irChoices.length; i++) {
+    irChoices[i].style.display = 'block';
   }
 
   if (SharedSearch.searchFrom == 'searchBA') {
     pageContainer.find('#pci_08').on('click', function () {
+      irisContent = {
+        'urg': '3'
+        , 'category' : '2'
+        , 'impact' : '4'
+        , 'area': 'NOVA-BILLING'
+        , 'subarea': 'DATA ACCURACY'
+        , 'probtype': 'pt17'
+      };
+
       openCreateIris("Current charge not correct");
+      
     });
 
     pageContainer.find('#pci_06').on('click', function () {
+      irisContent = {
+        'urg': '3'
+        , 'category' : '2'
+        , 'impact' : '4'
+        , 'area': 'NOVA-BILLING'
+        , 'subarea': 'DATA ACCURACY'
+        , 'probtype': 'pt16'
+      };
+      
       openCreateIris("Bill Display not correct");
     });
 
     pageContainer.find('#pci_07').on('click', function () {
+      irisContent = {
+        'urg': '3'
+        , 'category' : '2'
+        , 'impact' : '2'
+        , 'area': 'NOVA-ASSURANCE'
+        , 'subarea': 'FAILED TO UPDATE'
+        , 'probtype': 'pt11'
+      };
+      
       openCreateIris("pci_07");
     });
   } else if (SharedSearch.searchFrom == 'searchOrder') {
     pageContainer.find('#pci_01').on('click', function () {
+      irisContent = {
+        'urg': '2'
+        , 'category' : '2'
+        , 'impact' : '4'
+        , 'area': 'NOVA-FULFILLMENT'
+        , 'subarea': 'FAILED TO CREATE'
+        , 'probtype': '29'
+      };
+      
       openCreateIris("Next task not triggered");
     });
 
     pageContainer.find('#pci_02').on('click', function () {
+      irisContent = {
+        'urg': '2'
+        , 'category' : '2'
+        , 'impact' : '4'
+        , 'area': 'NOVA-FULFILLMENT'
+        , 'subarea': 'FAILED TO CREATE'
+        , 'probtype': '29'
+      };
+      
       openCreateIris("Order not Completed");
     });
 
     pageContainer.find('#pci_03').on('click', function () {
+      irisContent = {
+        'urg': '2'
+        , 'category' : '2'
+        , 'impact' : '4'
+        , 'area': 'NOVA-FULFILLMENT'
+        , 'subarea': 'FAILED TO CREATE'
+        , 'probtype': '29'
+      };
+      
       openCreateIris("Order D&A In Progress");
     });
 
     pageContainer.find('#pci_04').on('click', function () {
+      irisContent = {
+        'urg': '2'
+        , 'category' : '2'
+        , 'impact' : '4'
+        , 'area': 'NOVA-FULFILLMENT'
+        , 'subarea': 'FAILED TO CREATE'
+        , 'probtype': '29'
+      };
+      
       openCreateIris("Order not exist in SWIFT Portal");
     });
   } else if (SharedSearch.searchFrom == 'searchCTT') {
     pageContainer.find('#pci_05').on('click', function () {
+      irisContent = {
+        'urg': '2'
+        , 'category' : '2'
+        , 'impact' : '4'
+        , 'area': 'NOVA-ASSURANCE'
+        , 'subarea': 'FAILED TO UPDATE'
+        , 'probtype': 'pt10'
+      };
+      
       openCreateIris("CTT not sync between NOVA and SWIFT");
     });
   } else {
@@ -179,7 +292,18 @@ myApp.onPageInit('bill_summ', function (page) {
   baLoadAccInfo("ba_summ_block");
 });
 
+myApp.onPageInit('order_osm_detail', function (page) {
+  document.getElementById("orderOsmDetailt").innerHTML = "OSM ID#" + osmInfos.osm_id;
+  document.getElementById("c_osm_process").innerHTML = osmInfos.osm_process;
+  document.getElementById("c_corr_id").innerHTML = osmInfos.corr_id;
+  
+  
+});
+
 myApp.onPageInit('order_eai_page', function (page) {
+
+  var pageContainer = $$(page.container);
+
   var osmitem = '<div class="swipeout-content item-content">' +
     '<div class="item-inner">' +
     '<div class="item-title-row">' +
@@ -190,11 +314,15 @@ myApp.onPageInit('order_eai_page', function (page) {
     '</div>' +
     '</div>' +
     '<div class="swipeout-actions-right">' +
-    '<a href="#" class="action1 bg-orange">Detail</a>' +
+    '<a href="#" id="osm_show_detail" class="action1 bg-orange">Detail</a>' +
     '<a href="#" class="action2 bg-green">Fix</a>' +
     '</div>';
 
     document.getElementById("osm_item").innerHTML = osmitem;
+
+    pageContainer.find('#ci_oep').on('click', function () {
+      mainView.loadPage("iris/pre_create_iris.html");
+    });
     
 });
 
@@ -220,6 +348,13 @@ myApp.onPageInit('order_summ', function (page) {
   for (svcs in sblInfos.services) {
     o_s_svcs = o_s_svcs
       + '    ' + sblInfos.services[svcs].svc_id + ' - ' + sblInfos.services[svcs].product_name + '<br />';
+
+    if(sblInfos.services[svcs].product_desc){
+      getServiceSegment(sblInfos.services[svcs].product_desc);
+    } else {
+      getServiceSegment(sblInfos.services[svcs].product_code);
+    }
+
     svcounter = svcounter + 1;
   }
 
@@ -231,6 +366,19 @@ myApp.onPageInit('order_summ', function (page) {
 
   document.getElementById("o_s_novainfo").innerHTML = o_s_content;
 
+  var inSwPortal = "Yes";
+  if(swiftInfos.network_order == 'Pending Processing'){
+    inSwPortal = "No";
+  }
+
+  var o_sw_content = 
+    '<p>In Swift Portal     : ' + inSwPortal + '</p>' +
+    '<p>Installation Status : ' + swiftInfos.install_status + '</p>' +
+    '<p>Planned Start       : ' + swiftInfos.install_start + '</p>' +
+    '<p>Planned End         : ' + swiftInfos.install_end + '</p>' +
+    '<p>UI ID               : ' + swiftInfos.ui_id + '</p>';
+
+  document.getElementById("o_s_swiftinfo").innerHTML = o_sw_content;
 });
 
 function searchOrder() {
@@ -247,7 +395,7 @@ function searchOrder() {
 
   // search for the order summary
   var searchURL = mainURL + '/order/o_search.php?orderno=' + SharedSearch.searchID;
-  myApp.alert(searchURL);
+  // myApp.alert(searchURL);
 
   $.getJSON(searchURL, function (retjson) {
     sblInfos = retjson;
@@ -257,16 +405,55 @@ function searchOrder() {
 
     $.getJSON(searchURL, function (retjson) {
       sblActivity = retjson;
-      mainView.loadPage("orderctt/order_summary.html");
+
+      // search for swift
+      searchURL = mainURL + '/order/o_sw_summ.php?orderno=' + SharedSearch.searchID;
+
+      $.getJSON(searchURL, function (retjson) {
+        swiftInfos = retjson;
+        
+        // search for osm
+        searchURL = mainURL + '/order/o_osm_info.php?orderno=' + SharedSearch.searchID;
+
+        $.getJSON(searchURL, function (retjson) {
+          osmInfos = retjson;
+          
+          if(osmInfos.osm_id){
+            // search for eai
+            searchURL = mainURL + '/order/o_eai_activity.php?osm_id=' + osmInfos.osm_id;
+
+            $.getJSON(searchURL, function (retjson) {
+              eaiActivities = retjson;
+              mainView.loadPage("orderctt/order_summary.html");
+            })
+              .fail(function () {
+                myApp.alert('Unable to fetch eai data for ' + SearchParam.ordernumber, 'Ouch');
+                return;
+              });
+          }
+          
+
+        })
+          .fail(function () {
+            myApp.alert('Unable to fetch osm data for ' + SearchParam.ordernumber, 'Ouch');
+            return;
+          });
+
+      })
+        .fail(function () {
+          myApp.alert('Unable to fetch swift data for ' + SearchParam.ordernumber, 'Ouch');
+          return;
+        });
+
     })
       .fail(function () {
-        myApp.alert('Unable to fetch data for ' + SearchParam.ordernumber, 'Ouch');
+        myApp.alert('Unable to fetch activity data for ' + SearchParam.ordernumber, 'Ouch');
         return;
       });
-
+    
   })
     .fail(function () {
-      myApp.alert('Unable to fetch data for ' + SearchParam.ordernumber, 'Ouch');
+      myApp.alert('Unable to fetch NOVA order data for ' + SearchParam.ordernumber, 'Ouch');
       return;
     });
 
@@ -393,23 +580,11 @@ function openCreateIris(irisType) {
 
 function initIrisCreatePage() {
 
-  var irisContent = {
-    'urg': '3'
-    , 'svc': 'NOVA'
-    , 'svcseg': '5'
-    , 'area': 'NOVA-ASSURANCE'
-    , 'subarea': 'FAILED TO UPDATE'
-    , 'probtype': 'pt11'
-    , 'ref': SharedSearch.searchID
-    , 'title': SharedSearch.searchID + ' - ' + SharedSearch.irisType
-    , 'desc': SharedSearch.searchID + ' - ' + 'some random masalah'
-  };
-
   document.getElementById("contact").value = UsersInfo.username;
   document.getElementById("notifyby").value = "1";
   document.getElementById("urg").value = irisContent.urg;
-  document.getElementById("svc").value = irisContent.svc;
-  document.getElementById("svcseg").value = irisContent.svcseg;
+  document.getElementById("svcseg").value = SharedSearch.svcsegment;
+  document.getElementById("category").value = irisContent.category;
   // document.getElementById("area").value = irisContent.area;
   $('#area').val(irisContent.area);
   fillSubareaLOV();
@@ -420,9 +595,9 @@ function initIrisCreatePage() {
   // document.getElementById("probtype").value = irisContent.probtype;
   $('#probtype').val(irisContent.probtype);
 
-  document.getElementById("ref").value = irisContent.ref;
-  document.getElementById("title").value = irisContent.title;
-  document.getElementById("desc").innerHTML = irisContent.desc;
+  document.getElementById("ref").value = SharedSearch.searchID;
+  document.getElementById("title").value = SharedSearch.searchID + ' - ' + SharedSearch.irisType;
+  document.getElementById("desc").innerHTML = SharedSearch.searchID + ' - ' + SharedSearch.irisType;
 
 }
 
@@ -538,10 +713,42 @@ function cHttpGet(theURL) {
   return Httpreq.responseText;
 }
 
+function getServiceSegment(productdesc){
+  
+  if(productdesc == 'TM HSBB R3 CR Product'){
+    SharedSearch.svcsegment = 3;
+  } else if(productdesc == 'BIZFEST 2017 : UniFi Biz Advance 30Mbps+ SVP50 (Free 24 months) + Discount RM20 (24 months)'){
+    SharedSearch.svcsegment = 3;
+  } else if(productdesc == 'TM HSBB R2 Product'){
+    SharedSearch.svcsegment = 3;
+  } else if(productdesc == 'Transmission Network'){
+    SharedSearch.svcsegment = 5;
+  } else if(productdesc == 'Transmission Tail Leg'){
+    SharedSearch.svcsegment = 5;
+  } else if(productdesc == 'Termination Point - Leased Line'){
+    SharedSearch.svcsegment = 5;
+  } else if(productdesc == 'Transmission Trunk'){
+    SharedSearch.svcsegment = 5;
+  } else if(productdesc == 'UniFi Biz Pro 100Mbps (TM Internal)'){
+    SharedSearch.svcsegment = 1;
+  } else if(productdesc == 'Release 2 Non Consumer Product'){
+    SharedSearch.svcsegment = 2;
+  } else if(productdesc == 'BIZFEST 2017 : UniFi Biz Pro 100Mbps + SVP70 (Free 24 months) + Discount RM20 (24 months)'){
+    SharedSearch.svcsegment = 3;
+  } else if(productdesc == 'Release 3.1 Non Consumer Product'){
+    SharedSearch.svcsegment = 4;
+  } else if(productdesc == 'UniFi Lite 10Mbps + Jumbo Lite Pack + Voice STD 20 + Free HyppTV Everywhere'){
+    SharedSearch.svcsegment = 3;
+  } else if(productdesc == 'UniFi Lite 10Mbps + Aneka Pack + Free HyppTV Everywhere'){
+    SharedSearch.svcsegment = 3;
+  } 
+
+}
+
 function createIris() {
   var irisForm = myApp.formToData('#c-iris-form');
 
-
+  
 
 }
 
