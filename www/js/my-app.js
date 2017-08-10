@@ -6,6 +6,7 @@ var sblInfos = {};
 var swiftInfos = {};
 var osmInfos = {};
 var eaiActivities = {};
+var irisInfo = {};
 var contentBlock;
 var mainURL = 'http://t21php.pub.bweas.tm.com.my/tmnox_php';
 var loggedIn = false;
@@ -104,8 +105,8 @@ myApp.onPageInit('login-screen', function (page) {
   pageContainer.find('.button').on('click', function () {
     UsersInfo = myApp.formToData('#login-form');
     // Handle username and password
-    // validateLogin();
-    dummyLogin();
+    validateLogin();
+    // dummyLogin();
   });
 });
 
@@ -314,7 +315,7 @@ myApp.onPageInit('order_eai_page', function (page) {
     '</div>' +
     '</div>' +
     '<div class="swipeout-actions-right">' +
-    '<a href="#" id="osm_show_detail" class="action1 bg-orange">Detail</a>' +
+    '<a href="orderctt/order_osm_detail.html" id="osm_show_detail" class="action1 bg-orange">Detail</a>' +
     '<a href="#" class="action2 bg-green">Fix</a>' +
     '</div>';
 
@@ -323,7 +324,28 @@ myApp.onPageInit('order_eai_page', function (page) {
     pageContainer.find('#ci_oep').on('click', function () {
       mainView.loadPage("iris/pre_create_iris.html");
     });
-    
+
+    var eaitoappend = "";
+
+    for(eaitem in eaiActivities){
+      var eaiitem = ' <li class="swipeout"><div class="swipeout-content item-content">' +
+          '<div class="item-inner">' +
+          '<div class="item-title-row">' +
+          '<div class="item-title">'+eaiActivities[eaitem].eai_id+'</div>' +
+          '<div class="item-after">'+eaiActivities[eaitem].audit_type+'</div>' +
+          '</div>' +
+          '<div class="item-text">'+eaiActivities[eaitem].event_name+'</div>' +
+          '</div>' +
+          '</div>' +
+          '<div class="swipeout-actions-right">' +
+          '<a href="#" id="osm_show_detail" class="action1 bg-orange">Detail</a>' +
+          '<a href="#" class="action2 bg-green">Fix</a>' +
+          '</div></li>';
+      eaitoappend = eaitoappend + eaiitem;
+    }
+
+    document.getElementById("eai_item").innerHTML = eaitoappend;
+
 });
 
 myApp.onPageInit('order_summ', function (page) {
@@ -380,6 +402,82 @@ myApp.onPageInit('order_summ', function (page) {
 
   document.getElementById("o_s_swiftinfo").innerHTML = o_sw_content;
 });
+
+function searchOrder2(ref_id) {
+
+  SharedSearch.searchID = ref_id;
+
+
+  SharedSearch.searchFrom = 'searchOrder';
+
+  // search for the order summary
+  var searchURL = mainURL + '/order/o_search.php?orderno=' + SharedSearch.searchID;
+  // myApp.alert(searchURL);
+
+  $.getJSON(searchURL, function (retjson) {
+    sblInfos = retjson;
+
+    // search for the activities
+    searchURL = mainURL + '/order/o_sb_activities.php?orderno=' + SharedSearch.searchID;
+
+    $.getJSON(searchURL, function (retjson) {
+      sblActivity = retjson;
+
+      // search for swift
+      searchURL = mainURL + '/order/o_sw_summ.php?orderno=' + SharedSearch.searchID;
+
+      $.getJSON(searchURL, function (retjson) {
+        swiftInfos = retjson;
+        
+        // search for osm
+        searchURL = mainURL + '/order/o_osm_info.php?orderno=' + SharedSearch.searchID;
+
+        $.getJSON(searchURL, function (retjson) {
+          osmInfos = retjson;
+          
+          if(osmInfos.osm_id){
+            // search for eai
+            searchURL = mainURL + '/order/o_eai_activity.php?osm_id=' + osmInfos.osm_id;
+
+            $.getJSON(searchURL, function (retjson) {
+              eaiActivities = retjson;
+              mainView.loadPage("orderctt/order_summary.html");
+            })
+              .fail(function () {
+                myApp.alert('Unable to fetch eai data for ' + SearchParam.ordernumber, 'Ouch');
+                return;
+              });
+          }
+          
+
+        })
+          .fail(function () {
+            myApp.alert('Unable to fetch osm data for ' + SearchParam.ordernumber, 'Ouch');
+            return;
+          });
+
+      })
+        .fail(function () {
+          myApp.alert('Unable to fetch swift data for ' + SearchParam.ordernumber, 'Ouch');
+          return;
+        });
+
+    })
+      .fail(function () {
+        myApp.alert('Unable to fetch activity data for ' + SearchParam.ordernumber, 'Ouch');
+        return;
+      });
+    
+  })
+    .fail(function () {
+      myApp.alert('Unable to fetch NOVA order data for ' + SearchParam.ordernumber, 'Ouch');
+      return;
+    });
+
+
+
+
+}
 
 function searchOrder() {
   SearchParam = myApp.formToData('#order-s-form');
@@ -575,7 +673,7 @@ function openCreateIris(irisType) {
 
   SharedSearch.irisType = irisType;
 
-  mainView.loadPage("iris_create.html");
+  mainView.loadPage("iris/iris_create.html");
 }
 
 function initIrisCreatePage() {
@@ -601,6 +699,54 @@ function initIrisCreatePage() {
 
 }
 
+
+myApp.onPageInit('close_iris_form', function (page) {
+  document.getElementById("createIrisTitle").innerHTML = "Close Iris: " + SharedSearch.searchID;
+
+  // Pull to refresh content
+  var ptrContent = $$(page.container).find('.pull-to-refresh-content');
+  // Add 'refresh' listener on it
+  ptrContent.on('refresh', function (e) {
+    // reload current page
+    mainView.router.reloadPage("iris/iris_close.html");
+    myApp.pullToRefreshDone();
+  });
+
+  document.getElementById("sdnum").value = irisInfo.interaction_id;
+  document.getElementById("status").value = irisInfo.status;
+  document.getElementById("contact").value = irisInfo.contact;
+  document.getElementById("urg").value = irisInfo.urgency;
+  document.getElementById("svcseg").value = irisInfo.service_segment;
+  document.getElementById("category").value = irisInfo.category;
+  document.getElementById("area").value = irisInfo.area;
+  document.getElementById("subarea").value = irisInfo.sub_area;
+  document.getElementById("probtype").value = irisInfo.problem_type;
+  document.getElementById("ref_id").innerHTML = irisInfo.reference;
+  document.getElementById("title").value = irisInfo.title;
+  document.getElementById("desc").value = irisInfo.description;
+
+  if(irisInfo.status == 'Closed'){
+    document.getElementById("closecode").value = irisInfo.closure_code;
+    document.getElementById("closecode").disabled = true;
+    document.getElementById("solution").value = irisInfo.solution;
+    document.getElementById("closecode").disabled = true;
+    document.getElementById("reasoncode").value = irisInfo.reason_code;
+    document.getElementById("closecode").disabled = true;
+    document.getElementById("remarks").value = irisInfo.remarks;
+    document.getElementById("closecode").disabled = true;
+
+    document.getElementById("closebtnir").style.display = 'none';
+  }
+
+  var pageContainer = $$(page.container);
+
+  pageContainer.find('#i_c_searchref').on('click', function () {
+    searchOrder2(irisInfo.reference);
+  });
+
+
+});
+
 function searchIris() {
   SearchParam = myApp.formToData('#iris-s-form');
 
@@ -610,6 +756,19 @@ function searchIris() {
     myApp.alert('Input must not be empty', 'Error');
     return;
   }
+
+  var searchURL = mainURL + '/iris/i_search.php?sdnum=' + SharedSearch.searchID;
+
+  $.getJSON(searchURL, function (retjson) {
+    irisInfo = retjson;
+    mainView.loadPage("iris/iris_close.html");
+  })
+    .fail(function () {
+      myApp.alert('Unable to fetch iris data for ' + SearchParam.ordernumber, 'Ouch');
+      return;
+    });
+
+
 }
 
 function searchBA() {
@@ -748,7 +907,66 @@ function getServiceSegment(productdesc){
 function createIris() {
   var irisForm = myApp.formToData('#c-iris-form');
 
-  
+  var updateurl = mainURL + "/iris/i_create.php?contact=" + irisForm.contact 
+          + "&notifyby=" + irisForm.notifyby 
+          + "&urg=" + irisForm.urg
+          + "&impact="  + irisForm.impact 
+          + "&svcseg=" + irisForm.svcseg
+          + "&category=" + irisForm.category
+          + "&area=" + irisForm.area
+          + "&subarea=" + irisForm.subarea
+          + "&probtype=" + irisForm.probtype
+          + "&ref=" + irisForm.ref
+          + "&title=" + irisForm.title
+          + "&desc=" + irisForm.desc ;
+
+  $.getJSON(updateurl, function (retjson) {
+    if (retjson.error) {
+      myApp.alert(retjson.error, "unable to create iris");
+    } else {
+
+      myApp.alert("" + retjson.sdnum, "Iris Created");
+      
+      mainView.loadPage("index.html");
+    }
+
+  })
+    .fail(function () {
+      myApp.alert('Unable to connect to server', 'Ouch');
+      return;
+    });
+
+
+}
+
+function closeIris(){
+  var irisForm = myApp.formToData('#close-iris-form');
+
+  var updateurl = mainURL + "/iris/i_create.php?sdnum=" + irisForm.sdnum 
+          + "&closecode=" + irisForm.closecode 
+          + "&solution=" + irisForm.solution
+          + "&reasoncode="  + irisForm.reasoncode 
+          + "&remark=" + irisForm.remarks
+
+
+
+  $.getJSON(updateurl, function (retjson) {
+    if (retjson.error) {
+      myApp.alert(retjson.error, "unable to close iris");
+    } else {
+      myApp.alert("" + irisForm.sdnum, "Iris Closed");
+
+      mainView.loadPage("index.html");
+    }
+
+  })
+    .fail(function () {
+      myApp.alert('Unable to connect to ldap', 'Ouch');
+      return;
+    });
+
+
+
 
 }
 
