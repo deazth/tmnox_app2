@@ -1,19 +1,65 @@
 // global vars
 var SearchParam = {};
 var baInfo = {};
-var sblActivity = {};
+var sblActivity = [{'act_id' : '1-7OW0V2F', 'sbl_status' : 'Done', 'act_name' : 'SWIFT Slotting Request', 'swf_status' : ''},
+{'act_id' : '1-7OW0V5Q', 'sbl_status' : 'Done', 'act_name' : 'Verify to Proceed', 'swf_status' : 'Done'},
+{'act_id' : '1-7OVZ7IC', 'sbl_status' : 'Scheduled', 'act_name' : 'Slot', 'swf_status' : ''},
+{'act_id' : '1-7OVYO3F', 'sbl_status' : 'Done', 'act_name' : 'Installation', 'swf_status' : 'Done'},
+{'act_id' : '1-7OW02GA', 'sbl_status' : 'Done', 'act_name' : 'Traveling/On Site', 'swf_status' : 'Done'},
+{'act_id' : '1-7OVZVDU', 'sbl_status' : 'Done', 'act_name' : 'Design & Assign', 'swf_status' : ''}
+];
 var sblInfos = {};
 var swiftInfos = {};
 var osmInfos = {};
-var eaiActivities = {};
+var eaiActivities = [{'eai_id' : 'EAI000001110321223', 'audit_type' : 'BillingActivate', 'event_name' : 'JMSRequest'},
+{'eai_id' : 'EAI000001110321223', 'audit_type' : 'BillingActivate', 'event_name' : 'WSResponse'},
+{'eai_id' : 'EAI000001110321223', 'audit_type' : 'BillingActivate', 'event_name' : 'WSRequest'},
+{'eai_id' : 'EAI000001110321223', 'audit_type' : 'BillingActivate', 'event_name' : 'WSResponse'},
+{'eai_id' : 'EAI000001110321223', 'audit_type' : 'BillingActivate', 'event_name' : 'WSRequest'},
+{'eai_id' : 'EAI000001110321223', 'audit_type' : 'BillingActivate', 'event_name' : 'PROV_ORDERING'},
+{'eai_id' : 'EAI000001110321223', 'audit_type' : 'BillingActivate', 'event_name' : 'PROD_MAPPING'},
+{'eai_id' : 'EAI000001110321223', 'audit_type' : 'BillingActivate', 'event_name' : 'SPLIT_ITEM'},
+{'eai_id' : 'EAI000001110321223', 'audit_type' : 'BillingActivate', 'event_name' : 'PREPROCESSOR'},
+{'eai_id' : 'EAI000001110321223', 'audit_type' : 'BillingActivate', 'event_name' : 'SVC_PRD_MATCH'},
+{'eai_id' : 'EAI000001110321223', 'audit_type' : 'BillingActivate', 'event_name' : 'RQI'}];
 var irisInfo = {};
 var contentBlock;
 var mainURL = 'http://t21php.pub.bweas.tm.com.my/tmnox_php';
 var loggedIn = false;
 var UsersInfo = {};
 var SharedSearch = {};
-var isAdmin;
+var isAdmin = true;
 var irisContent;
+
+// put all the dataset in here
+var SiebelON = '1-16742325973';
+
+var OSM_INFO = {'siebel_order_no' : '1-16742325973',
+'osm_id' : '11027922',
+'task_mne' : 'Exception_Update_Billing',
+'state' : 'Received',
+'process' : 'HSBA_Update_Billing_-_Sequential',
+'corr_id' : '11027922-27132059791'};
+
+var SIEBEL_INFO  = {'siebel_order_no' : '1-16742325973',
+'order_type' : 'New Install', 'acc_name' : 'MAXIS BROADBAND SDN. BHD.', 'order_status' : 'PONR',
+'orders' : [
+  {'login' : 'VL1026726339', 'product_name' : 'VLAN Voice', 'product_desc' : 'Release 2 Non Consumer Product'},
+  {'login' : 'VL1026726340', 'product_name' : 'VLAN Data', 'product_desc' : 'Release 2 Non Consumer Product'},
+  {'login' : 'VL1026726341', 'product_name' : 'VLAN Voice', 'product_desc' : 'Release 2 Non Consumer Product'},
+  {'login' : 'BU1026726342', 'product_name' : 'BTU Port', 'product_desc' : 'Release 2 Non Consumer Product'}]
+};
+
+var SIEBEL_ACTIVITY = {'siebel_order_no' : '1-16742325973',
+'activities' : [
+  {'activity_num' : '1-7OW0V2F', 'activity_status' : 'Done', 'activity_name' : 'SWIFT Slotting Request', 'activity_created' : '7/7/2017', 'ref' : 'Order HSBA not turn Completed'},
+  {'activity_num' : '1-7OW0V5Q', 'activity_status' : 'Done', 'activity_name' : 'Verify to Proceed', 'activity_created' : '7/7/2017', 'ref' : 'Exception Update Billing'},
+  {'activity_num' : '1-7OVZ7IC', 'activity_status' : 'Scheduled', 'activity_name' : 'Slot', 'activity_created' : '7/7/2017', 'ref' : ''},
+  {'activity_num' : '1-7OVYO3F', 'activity_status' : 'Done', 'activity_name' : 'Installation', 'activity_created' : '7/7/2017', 'ref' : ''},
+  {'activity_num' : '1-7OW02GA', 'activity_status' : 'Done', 'activity_name' : 'Traveling/On Site', 'activity_created' : '7/7/2017', 'ref' : ''},
+  {'activity_num' : '1-7OVZVDU', 'activity_status' : 'Done', 'activity_name' : 'Design & Assign', 'activity_created' : '7/7/2017', 'ref' : ''}
+]};
+
 
 // Initialize your app
 var myApp = new Framework7({
@@ -93,8 +139,8 @@ myApp.onPageInit('index', function (page) {
 
 myApp.onPageInit('login-screen', function (page) {
 
-  loggedIn = false;
-  isAdmin = false;
+  // loggedIn = false;
+  // isAdmin = false;
   SharedSearch = {};
   UsersInfo = {};
   SharedSearch.svcsegment = 3;
@@ -119,24 +165,30 @@ function dummyLogin() {
 function validateLogin() {
   var searchURL = mainURL + '/misc/login.php?username=' + UsersInfo.username + "&password=" + UsersInfo.password;
   //  myApp.alert(searchURL);
+  isAdmin = true;
+  mainView.loadPage("index.html");
 
-  $.getJSON(searchURL, function (retjson) {
-    if (retjson.error) {
-      myApp.alert(retjson.error, "unable to login");
-    } else {
-      loggedIn = true;
-      myApp.params.swipePanel = 'right';
+  // $.getJSON(searchURL, function (retjson) {
+  //   if (retjson.error) {
+  //     myApp.alert(retjson.error, "unable to login");
+  //   } else {
+  //     loggedIn = true;
+  //     myApp.params.swipePanel = 'right';
 
-      isAdmin = retjson.isadmin;
+  //     if(retjson.isadmin == 'false'){
+  //       isAdmin = false;
+  //     } else {
+  //       isAdmin = true;
+  //     }
 
-      mainView.loadPage("index.html");
-    }
+  //     mainView.loadPage("index.html");
+  //   }
 
-  })
-    .fail(function () {
-      myApp.alert('Unable to connect to ldap', 'Ouch');
-      return;
-    });
+  // })
+  //   .fail(function () {
+  //     myApp.alert('Unable to connect to ldap', 'Ouch');
+  //     return;
+  //   });
 
 
   // });
@@ -308,22 +360,19 @@ myApp.onPageInit('order_eai_page', function (page) {
   var osmitem = '<div class="swipeout-content item-content">' +
     '<div class="item-inner">' +
     '<div class="item-title-row">' +
-    '<div class="item-title">'+osmInfos.osm_id+'</div>' +
-    '<div class="item-after">'+osmInfos.osm_status+'</div>' +
+    '<div class="item-title">'+OSM_INFO.osm_id+'</div>' +
+    '<div class="item-after">'+OSM_INFO.state+'</div>' +
     '</div>' +
-    '<div class="item-text">'+osmInfos.task_mne+'</div>' +
+    '<div class="item-text">'+OSM_INFO.task_mne+'</div>' +
     '</div>' +
     '</div>' +
     '<div class="swipeout-actions-right">' +
     '<a href="orderctt/order_osm_detail.html" id="osm_show_detail" class="action1 bg-orange">Detail</a>' +
-    '<a href="#" class="action2 bg-green">Fix</a>' +
+    '<a href="#" class="action2 bg-green">Refire</a>' +
     '</div>';
 
     document.getElementById("osm_item").innerHTML = osmitem;
 
-    pageContainer.find('#ci_oep').on('click', function () {
-      mainView.loadPage("iris/pre_create_iris.html");
-    });
 
     var eaitoappend = "";
 
@@ -350,33 +399,28 @@ myApp.onPageInit('order_eai_page', function (page) {
 
 myApp.onPageInit('order_summ', function (page) {
   hideAdminStuffs();
-  document.getElementById("orderSumTopTitle").innerHTML = "Order: " + SearchParam.ordernumber;
+  document.getElementById("orderSumTopTitle").innerHTML = "Order: " + SiebelON;
 
-  if (sblInfos.error || !sblInfos) {
-    myApp.alert('No data fetched', 'NOX');
-    mainView.router.loadPage('index.html');
-  }
+  // if (sblInfos.error || !sblInfos) {
+  //   myApp.alert('No data fetched', 'NOX');
+  //   mainView.router.loadPage('index.html');
+  // }
 
   // set the content for siebel summary
   var o_s_content =
-    '<p>Account Name : ' + sblInfos.acc_name + '</p>' +
-    '<p>Bill Cycle   : ' + sblInfos.order_type + '</p>' +
-    '<p>Bill Media   : ' + sblInfos.order_status + '</p>';
+    '<p>Account Name : ' + SIEBEL_INFO.acc_name + '</p>' +
+    '<p>Order Type   : ' + SIEBEL_INFO.order_type + '</p>' +
+    '<p>Order Status : ' + SIEBEL_INFO.order_status + '</p>';
 
   // set the content for service list
   var svcounter = 0;
   var o_s_svcs = '<p>Services: <br />';
 
-  for (svcs in sblInfos.services) {
+  for (svcs in SIEBEL_INFO.orders) {
     o_s_svcs = o_s_svcs
-      + '    ' + sblInfos.services[svcs].svc_id + ' - ' + sblInfos.services[svcs].product_name + '<br />';
+      + '    ' + SIEBEL_INFO.orders[svcs].login + ' - ' + SIEBEL_INFO.orders[svcs].product_name + '<br />';
 
-    if(sblInfos.services[svcs].product_desc){
-      getServiceSegment(sblInfos.services[svcs].product_desc);
-    } else {
-      getServiceSegment(sblInfos.services[svcs].product_code);
-    }
-
+    getServiceSegment(SIEBEL_INFO.orders[svcs].product_desc);
     svcounter = svcounter + 1;
   }
 
@@ -388,17 +432,17 @@ myApp.onPageInit('order_summ', function (page) {
 
   document.getElementById("o_s_novainfo").innerHTML = o_s_content;
 
-  var inSwPortal = "Yes";
-  if(swiftInfos.network_order == 'Pending Processing'){
-    inSwPortal = "No";
-  }
+  // var inSwPortal = "Yes";
+  // if(swiftInfos.network_order == 'Pending Processing'){
+  //   inSwPortal = "No";
+  // }
 
   var o_sw_content = 
-    '<p>In Swift Portal     : ' + inSwPortal + '</p>' +
-    '<p>Installation Status : ' + swiftInfos.install_status + '</p>' +
-    '<p>Planned Start       : ' + swiftInfos.install_start + '</p>' +
-    '<p>Planned End         : ' + swiftInfos.install_end + '</p>' +
-    '<p>UI ID               : ' + swiftInfos.ui_id + '</p>';
+    '<p>In Swift Portal     : Yes</p>' +
+    '<p>Installation Status : Done</p>' +
+    '<p>Planned Start       : 7/12/2017  2:30:00 PM</p>' +
+    '<p>Planned End         : 7/12/2017  5:00:00 PM</p>' +
+    '<p>UI ID               : Q000477</p>';
 
   document.getElementById("o_s_swiftinfo").innerHTML = o_sw_content;
 });
@@ -410,6 +454,9 @@ function searchOrder2(ref_id) {
 
   SharedSearch.searchFrom = 'searchOrder';
 
+  mainView.loadPage("orderctt/order_summary.html");
+
+  /*
   // search for the order summary
   var searchURL = mainURL + '/order/o_search.php?orderno=' + SharedSearch.searchID;
   // myApp.alert(searchURL);
@@ -475,7 +522,7 @@ function searchOrder2(ref_id) {
     });
 
 
-
+*/
 
 }
 
@@ -490,7 +537,9 @@ function searchOrder() {
   }
 
   SharedSearch.searchFrom = 'searchOrder';
+  mainView.loadPage("orderctt/order_summary.html");
 
+  /*
   // search for the order summary
   var searchURL = mainURL + '/order/o_search.php?orderno=' + SharedSearch.searchID;
   // myApp.alert(searchURL);
@@ -555,7 +604,7 @@ function searchOrder() {
       return;
     });
 
-
+    */
 
 
 }
@@ -609,6 +658,10 @@ myApp.onPageInit('order_activities', function (page) {
 
   document.getElementById('siebel_item_lst').innerHTML = sblAContent;
 
+  var pageContainer = $$(page.container);
+  pageContainer.find('#ci_oep').on('click', function () {
+    mainView.loadPage("iris/pre_create_iris.html");
+  });
 
 });
 
@@ -804,14 +857,14 @@ function searchBA() {
   //   } else {
   //     myApp.alert('data fetched');
       contentBlock =
-        '<p>Name      : Pelanggan A</p>' +
+        '<p>Name      : Britney Spears</p>' +
         '<p>Bill Cycle: 16</p>' +
-        '<p>Bill Media: EMail</p>' +
+        '<p>Bill Media: E-Mail</p>' +
         '<p>Address   : 22, Baker Street</p>' +
-        '<p>To Email  : a_bu@email.kom</p>' +
+        '<p>To Email  : iambritney@email.com</p>' +
         '<p>CC Email  : </p>' +
-        '<p>Mobile No : 01111111111</p>' +
-        '<p>Current Outstanding: 301.45s</p>';
+        '<p>Mobile No : 012-callme</p>' +
+        '<p>Current Outstanding: 301.45</p>';
       mainView.loadPage("bills/ba_summary.html");
       // mainView.router.loadPage('ba_summary.html');
   //   }
