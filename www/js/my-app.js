@@ -2,6 +2,14 @@
 var SearchParam = {};
 var baInfo = {};
 var sblActivity = [{'act_id' : '1-7OW0V2F', 'sbl_status' : 'Done', 'act_name' : 'SWIFT Slotting Request', 'swf_status' : ''},
+{'act_id' : '1-7OW0V5Q', 'sbl_status' : 'Done', 'act_name' : 'Verify to Proceed', 'swf_status' : ''},
+{'act_id' : '1-7OVZ7IC', 'sbl_status' : 'Scheduled', 'act_name' : 'Slot', 'swf_status' : ''},
+{'act_id' : '1-7OVYO3F', 'sbl_status' : 'Done', 'act_name' : 'Installation', 'swf_status' : ''},
+{'act_id' : '1-7OW02GA', 'sbl_status' : 'Done', 'act_name' : 'Traveling/On Site', 'swf_status' : ''},
+{'act_id' : '1-7OVZVDU', 'sbl_status' : 'Done', 'act_name' : 'Design & Assign', 'swf_status' : ''}
+];
+
+var sblActivity_after = [{'act_id' : '1-7OW0V2F', 'sbl_status' : 'Done', 'act_name' : 'SWIFT Slotting Request', 'swf_status' : ''},
 {'act_id' : '1-7OW0V5Q', 'sbl_status' : 'Done', 'act_name' : 'Verify to Proceed', 'swf_status' : 'Done'},
 {'act_id' : '1-7OVZ7IC', 'sbl_status' : 'Scheduled', 'act_name' : 'Slot', 'swf_status' : ''},
 {'act_id' : '1-7OVYO3F', 'sbl_status' : 'Done', 'act_name' : 'Installation', 'swf_status' : 'Done'},
@@ -907,11 +915,11 @@ function hideAdminStuffs() {
 
 // Billing related functions
 function getTrialBill() {
-  SearchParam = myApp.formToData('#order-s-form');
-  SearchParam.sType = "searchOrder";
+  // SearchParam = myApp.formToData('#order-s-form');
+  SearchParam.sType = "searchTB";
   //  alert(SBA_SearchParam.banumber);
 
-  mainView.loadPage("order_summary.html");
+  mainView.loadPage("bills/ba_trial_bill.html");
 }
 
 function baLoadAccInfo(blockname) {
