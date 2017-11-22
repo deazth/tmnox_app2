@@ -2,18 +2,18 @@
 var SearchParam = {};
 var baInfo = {};
 var sblActivity = [{'act_id' : '1-7OW0V2F', 'sbl_status' : 'Done', 'act_name' : 'SWIFT Slotting Request', 'swf_status' : ''},
-{'act_id' : '1-7OW0V5Q', 'sbl_status' : 'Done', 'act_name' : 'Verify to Proceed', 'swf_status' : ''},
+{'act_id' : '1-7OW0V5Q', 'sbl_status' : 'In Progress', 'act_name' : 'Verify to Proceed', 'swf_status' : ''},
 {'act_id' : '1-7OVZ7IC', 'sbl_status' : 'Scheduled', 'act_name' : 'Slot', 'swf_status' : ''},
-{'act_id' : '1-7OVYO3F', 'sbl_status' : 'Done', 'act_name' : 'Installation', 'swf_status' : ''},
-{'act_id' : '1-7OW02GA', 'sbl_status' : 'Done', 'act_name' : 'Traveling/On Site', 'swf_status' : ''},
+{'act_id' : '1-7OVYO3F', 'sbl_status' : 'In Progress', 'act_name' : 'Installation', 'swf_status' : ''},
+{'act_id' : '1-7OW02GA', 'sbl_status' : 'In Progress', 'act_name' : 'Traveling/On Site', 'swf_status' : ''},
 {'act_id' : '1-7OVZVDU', 'sbl_status' : 'Done', 'act_name' : 'Design & Assign', 'swf_status' : ''}
 ];
 
 var sblActivity_after = [{'act_id' : '1-7OW0V2F', 'sbl_status' : 'Done', 'act_name' : 'SWIFT Slotting Request', 'swf_status' : ''},
-{'act_id' : '1-7OW0V5Q', 'sbl_status' : 'Done', 'act_name' : 'Verify to Proceed', 'swf_status' : 'Done'},
+{'act_id' : '1-7OW0V5Q', 'sbl_status' : 'In Progress', 'act_name' : 'Verify to Proceed', 'swf_status' : 'In Progress'},
 {'act_id' : '1-7OVZ7IC', 'sbl_status' : 'Scheduled', 'act_name' : 'Slot', 'swf_status' : ''},
-{'act_id' : '1-7OVYO3F', 'sbl_status' : 'Done', 'act_name' : 'Installation', 'swf_status' : 'Done'},
-{'act_id' : '1-7OW02GA', 'sbl_status' : 'Done', 'act_name' : 'Traveling/On Site', 'swf_status' : 'Done'},
+{'act_id' : '1-7OVYO3F', 'sbl_status' : 'In Progress', 'act_name' : 'Installation', 'swf_status' : 'In Progress'},
+{'act_id' : '1-7OW02GA', 'sbl_status' : 'In Progress', 'act_name' : 'Traveling/On Site', 'swf_status' : 'In Progress'},
 {'act_id' : '1-7OVZVDU', 'sbl_status' : 'Done', 'act_name' : 'Design & Assign', 'swf_status' : ''}
 ];
 var sblInfos = {};
@@ -30,7 +30,18 @@ var eaiActivities = [{'eai_id' : 'EAI000001110321223', 'audit_type' : 'BillingAc
 {'eai_id' : 'EAI000001110321223', 'audit_type' : 'BillingActivate', 'event_name' : 'PREPROCESSOR'},
 {'eai_id' : 'EAI000001110321223', 'audit_type' : 'BillingActivate', 'event_name' : 'SVC_PRD_MATCH'},
 {'eai_id' : 'EAI000001110321223', 'audit_type' : 'BillingActivate', 'event_name' : 'RQI'}];
-var irisInfo = {};
+var irisInfo = {'interaction_id' : 'SD10000001',
+'status' : 'New',
+'contact' : 'user',
+'urgency' : '2 - High',
+'service_segment' : 'HSBA',
+'category' : 'Incident',
+'area' : 'NOVA-FULFILLMENT',
+'sub_area' : 'FAILED TO CREATE',
+'problem_type' : 'FAILED TO CREATE',
+'reference' : '1-16742325973',
+'title' : '1-16742325973 Activity not appear',
+'description' : '1-16742325973 Activity not appear in Swift' };
 var contentBlock;
 var mainURL = 'http://t21php.pub.bweas.tm.com.my/tmnox_php';
 var loggedIn = false;
@@ -39,12 +50,22 @@ var SharedSearch = {};
 var isAdmin = true;
 var irisContent;
 
+var SwiftPortalInfo = {
+  'inswiftportal' : 'No',
+  'install' : 'N/A'
+};
+
+var SwiftPortalInfo_2 = {
+  'inswiftportal' : 'Yes',
+  'install' : 'In Progress'
+};
+
 // put all the dataset in here
 var SiebelON = '1-16742325973';
 
 var OSM_INFO = {'siebel_order_no' : '1-16742325973',
 'osm_id' : '11027922',
-'task_mne' : 'Exception_Update_Billing',
+'task_mne' : 'OSM_SWIFT_Slotting_Activity_In_Progress_Wait',
 'state' : 'Received',
 'process' : 'HSBA_Update_Billing_-_Sequential',
 'corr_id' : '11027922-27132059791'};
@@ -376,7 +397,7 @@ myApp.onPageInit('order_eai_page', function (page) {
     '</div>' +
     '<div class="swipeout-actions-right">' +
     '<a href="orderctt/order_osm_detail.html" id="osm_show_detail" class="action1 bg-orange">Detail</a>' +
-    '<a href="#" class="action2 bg-green">Refire</a>' +
+    '<a href="#" onclick="refireOSM('+OSM_INFO.osm_id+')" class="action2 bg-green">Refire</a>' +
     '</div>';
 
     document.getElementById("osm_item").innerHTML = osmitem;
@@ -396,7 +417,7 @@ myApp.onPageInit('order_eai_page', function (page) {
           '</div>' +
           '<div class="swipeout-actions-right">' +
           '<a href="#" id="osm_show_detail" class="action1 bg-orange">Detail</a>' +
-          '<a href="#" class="action2 bg-green">Fix</a>' +
+          '<a href="#" class="action2 bg-green">Retrigger</a>' +
           '</div></li>';
       eaitoappend = eaitoappend + eaiitem;
     }
@@ -446,14 +467,22 @@ myApp.onPageInit('order_summ', function (page) {
   // }
 
   var o_sw_content = 
-    '<p>In Swift Portal     : Yes</p>' +
-    '<p>Installation Status : Done</p>' +
-    '<p>Planned Start       : 7/12/2017  2:30:00 PM</p>' +
-    '<p>Planned End         : 7/12/2017  5:00:00 PM</p>' +
-    '<p>UI ID               : Q000477</p>';
+    '<p>In Swift Portal     : '+SwiftPortalInfo.inswiftportal+'</p>' +
+    '<p>Installation Status : '+SwiftPortalInfo.install+'</p>' +
+    '<p>Planned Start       : N/A</p>' +
+    '<p>Planned End         : N/A</p>' +
+    '<p>UI ID               : N/A</p>';
 
   document.getElementById("o_s_swiftinfo").innerHTML = o_sw_content;
 });
+
+function refireOSM(theosmid){
+  sblActivity = sblActivity_after;
+  SwiftPortalInfo = SwiftPortalInfo_2;
+
+  myApp.alert('Task Refired');
+  mainView.loadPage("orderctt/order_summary.html");
+}
 
 function searchOrder2(ref_id) {
 
@@ -739,7 +768,7 @@ function openCreateIris(irisType) {
 
 function initIrisCreatePage() {
 
-  document.getElementById("contact").value = UsersInfo.username;
+  document.getElementById("contact").value = "TM1337";
   document.getElementById("notifyby").value = "1";
   document.getElementById("urg").value = irisContent.urg;
   document.getElementById("svcseg").value = SharedSearch.svcsegment;
@@ -818,16 +847,16 @@ function searchIris() {
     return;
   }
 
-  var searchURL = mainURL + '/iris/i_search.php?sdnum=' + SharedSearch.searchID;
+  // var searchURL = mainURL + '/iris/i_search.php?sdnum=' + SharedSearch.searchID;
 
-  $.getJSON(searchURL, function (retjson) {
-    irisInfo = retjson;
+  // $.getJSON(searchURL, function (retjson) {
+  //   irisInfo = retjson;
     mainView.loadPage("iris/iris_close.html");
-  })
-    .fail(function () {
-      myApp.alert('Unable to fetch iris data for ' + SearchParam.ordernumber, 'Ouch');
-      return;
-    });
+  // })
+  //   .fail(function () {
+  //     myApp.alert('Unable to fetch iris data for ' + SearchParam.ordernumber, 'Ouch');
+  //     return;
+  //   });
 
 
 }
@@ -865,14 +894,14 @@ function searchBA() {
   //   } else {
   //     myApp.alert('data fetched');
       contentBlock =
-        '<p>Name      : Britney Spears</p>' +
+        '<p>Name      : Haris Pilton</p>' +
         '<p>Bill Cycle: 16</p>' +
         '<p>Bill Media: E-Mail</p>' +
-        '<p>Address   : 22, Baker Street</p>' +
-        '<p>To Email  : iambritney@email.com</p>' +
+        '<p>Address   : World End Tavern, Shattrath City</p>' +
+        '<p>To Email  : expensive@myshop.com</p>' +
         '<p>CC Email  : </p>' +
         '<p>Mobile No : 012-callme</p>' +
-        '<p>Current Outstanding: 301.45</p>';
+        '<p>Current Outstanding: 2000.00</p>';
       mainView.loadPage("bills/ba_summary.html");
       // mainView.router.loadPage('ba_summary.html');
   //   }
@@ -981,21 +1010,21 @@ function createIris() {
           + "&title=" + irisForm.title
           + "&desc=" + irisForm.desc ;
 
-  $.getJSON(updateurl, function (retjson) {
-    if (retjson.error) {
-      myApp.alert(retjson.error, "unable to create iris");
-    } else {
+  // $.getJSON(updateurl, function (retjson) {
+  //   if (retjson.error) {
+  //     myApp.alert(retjson.error, "unable to create iris");
+  //   } else {
 
-      myApp.alert("" + retjson.sdnum, "Iris Created");
+      myApp.alert("SD10000001 : " + irisForm.title, "Iris Created");
       
       mainView.loadPage("index.html");
-    }
+  //   }
 
-  })
-    .fail(function () {
-      myApp.alert('Unable to connect to server', 'Ouch');
-      return;
-    });
+  // })
+  //   .fail(function () {
+  //     myApp.alert('Unable to connect to server', 'Ouch');
+  //     return;
+  //   });
 
 
 }
